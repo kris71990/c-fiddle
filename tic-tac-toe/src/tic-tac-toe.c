@@ -114,50 +114,49 @@ void playGame(int turn) {
   while (gameOver(board) == 0 && moveNumber < 9) {
     printf("\nEnter the number of the square you choose to play in > ");
     scanf(" %c", &moveIndex);
-
-    int num = (int)moveIndex;
-    switch (num) {
-      case 1: {
+    
+    switch (moveIndex) {
+      case '1': {
         x = 0;
         y = 0;
         break;
       }
-      case 2: {
+      case '2': {
         x = 1;
         y = 0;
         break;
       }
-      case 3: {
+      case '3': {
         x = 2;
         y = 0;
         break;
       }
-      case 4: {
+      case '4': {
         x = 0;
         y = 1;
         break;
       }
-      case 5: {
+      case '5': {
         x = 1;
         y = 1;
         break;
       }
-      case 6: {
+      case '6': {
         x = 2;
         y = 1;
         break;
       }
-      case 7: {
+      case '7': {
         x = 0;
         y = 2;
         break;
       }
-      case 8: {
+      case '8': {
         x = 1;
         y = 2;
         break;
       }
-      case 9: {
+      case '9': {
         x = 2;
         y = 2;
         break;
@@ -171,12 +170,12 @@ void playGame(int turn) {
     board[x][y] = turn % 2 == 1 ? PLAYER1MOVE : PLAYER2MOVE;
 
     if (turn % 2 == 1) {
-      printf("\nPLAYER 1 has put a '%c' in cell %c\n", PLAYER1MOVE, num);
+      printf("\nPLAYER 1 has put a '%c' in cell %c\n", PLAYER1MOVE, moveIndex);
       printf("x - %d, y - %d", x, y);
       turn = PLAYER2;
     } else {
-      printf("\nPLAYER 2 has put an '%c' in cell %c\n", PLAYER2MOVE, num);
-      printf("x- %d, y-%d", x, y);
+      printf("\nPLAYER 2 has put an '%c' in cell %c\n", PLAYER2MOVE, moveIndex);
+      printf("x - %d, y - %d", x, y);
       turn = PLAYER1;
     }
 
