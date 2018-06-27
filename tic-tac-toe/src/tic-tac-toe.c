@@ -1,17 +1,26 @@
+/* -----------------------------
+Tic-Tac-Toe - Kris Sakarias
+------------------------------ */
+
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include "tic-tac-toe.h"
 
+/* ------------------------------------
+Display opening instructions 
+to the game and respond to user input
+-------------------------------------- */
 void displayInstructions() {
   char answer;
   printf("\nShall we play a game? > ");
-  scanf(" %c\n", &answer);
+  answer = getchar();
 
   while (tolower(answer) != 'y') {
     printf("How about a nice friendly game of tic-tac-toe? > ");
-    scanf(" %c\n", &answer);
+    scanf(" %c", &answer);
   }
 
   printf("\n\t\b\b*- Let's play Tic-Tac-Toe! -*\n\n");
@@ -22,6 +31,10 @@ void displayInstructions() {
   return;
 }
 
+/* --------------------------------------------
+Display board, values are filled in as 
+the game is played and is rerendered each time
+----------------------------------------------- */
 void displayBoard(char board[SIDE][SIDE]) {
   printf("\n");
   printf("\t %c | %c | %c \n", board[0][0], board[1][0], board[2][0]);
@@ -32,9 +45,11 @@ void displayBoard(char board[SIDE][SIDE]) {
   return;
 }
 
+/* --------------------------------------------
+Initialize the board at beginning of game with
+empty spaces
+----------------------------------------------- */
 void initBoard(char board[SIDE][SIDE]) {
-  srand(time(NULL));
-
   for (int i = 0; i < SIDE; i++) {
     for (int j = 0; j < SIDE; j++) {
       board[i][j] = ' ';
@@ -43,6 +58,11 @@ void initBoard(char board[SIDE][SIDE]) {
   return;
 }
 
+/* --------------------------------------------
+These functions check to see if the game has 
+been won by checking vertically, horizontally,
+as well as diagonally
+----------------------------------------------- */
 int rowCrossed(char board[SIDE][SIDE]) {
   for (int i = 0; i < SIDE; i++) {
     if (board[i][0] == board[i][1]
@@ -80,10 +100,21 @@ int diagonalCrossed(char board[SIDE][SIDE]) {
   return 0;
 }
 
+/* --------------------------------------------
+This function is called at game end and checks if 
+there is a winner
+----------------------------------------------- */
 int gameOver(char board[SIDE][SIDE]) {
-  return (rowCrossed(board) || columnCrossed(board) || diagonalCrossed(board));
+  if (rowCrossed(board) || columnCrossed(board) || diagonalCrossed(board)) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
+/* ------------------------------------------------------
+If a winner exists, this function crowns them as champion
+-------------------------------------------------------- */
 void declareWinner(int turn) {
   switch (turn) {
     case 1: {
@@ -101,6 +132,16 @@ void declareWinner(int turn) {
   }
 }
 
+/* ------------------------------------------------------
+The game is played in this function. As long as a winner
+does not yet exist and there are empty squares on the board,
+players alternate moves by declaring a square number. The game
+finds the coordinates of this square, marks it with the appropriate
+character and changes turns. 
+
+If someone wins, the game ends and declares the winner.
+If the game ends without a winner, it proclaims a draw.
+-------------------------------------------------------- */
 void playGame(int turn) {
   char board[SIDE][SIDE];
 
@@ -112,52 +153,51 @@ void playGame(int turn) {
   int x, y;
 
   while (gameOver(board) == 0 && moveNumber < 9) {
-    printf("\nEnter the number of the square you choose to play in > ");
+    printf("\nEnter the number of the square you choose to play in\n> ");
     scanf(" %c", &moveIndex);
 
-    int num = (int)moveIndex;
-    switch (num) {
-      case 1: {
+    switch (moveIndex) {
+      case '1': {
         x = 0;
         y = 0;
         break;
       }
-      case 2: {
+      case '2': {
         x = 1;
         y = 0;
         break;
       }
-      case 3: {
+      case '3': {
         x = 2;
         y = 0;
         break;
       }
-      case 4: {
+      case '4': {
         x = 0;
         y = 1;
         break;
       }
-      case 5: {
+      case '5': {
         x = 1;
         y = 1;
         break;
       }
-      case 6: {
+      case '6': {
         x = 2;
         y = 1;
         break;
       }
-      case 7: {
+      case '7': {
         x = 0;
         y = 2;
         break;
       }
-      case 8: {
+      case '8': {
         x = 1;
         y = 2;
         break;
       }
-      case 9: {
+      case '9': {
         x = 2;
         y = 2;
         break;
@@ -168,15 +208,20 @@ void playGame(int turn) {
       }
     }
 
+    if (board[x][y] != ' ') {
+      puts("That square is already occupied");
+      continue;
+    }
+
     board[x][y] = turn % 2 == 1 ? PLAYER1MOVE : PLAYER2MOVE;
 
     if (turn % 2 == 1) {
-      printf("\nPLAYER 1 has put a '%c' in cell %c\n", PLAYER1MOVE, num);
+      printf("\nPLAYER 1 has put a '%c' in cell %c\n", PLAYER1MOVE, moveIndex);
       printf("x - %d, y - %d", x, y);
       turn = PLAYER2;
     } else {
-      printf("\nPLAYER 2 has put an '%c' in cell %c\n", PLAYER2MOVE, num);
-      printf("x- %d, y-%d", x, y);
+      printf("\nPLAYER 2 has put an '%c' in cell %c\n", PLAYER2MOVE, moveIndex);
+      printf("x - %d, y - %d", x, y);
       turn = PLAYER1;
     }
 
@@ -184,14 +229,9 @@ void playGame(int turn) {
     moveNumber += 1;
   }
 
-  if (gameOver(board) == 0 && moveIndex == SIDE * SIDE) {
+  if (gameOver(board) == 0 && moveNumber == SIDE * SIDE) {
     printf("It's a draw\n");
   } else {
-    if (turn == PLAYER1) {
-      turn = PLAYER2;
-    } else if (turn == PLAYER2) {
-      turn = PLAYER1;
-    }
     declareWinner(turn);
   }
   return;
