@@ -1,4 +1,4 @@
-# Playing with C
+# Experimentation with C
 
 **Author** Kris Sakarias
 
