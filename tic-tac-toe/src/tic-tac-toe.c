@@ -1,6 +1,6 @@
-/* -----------------------------
-Tic-Tac-Toe - Kris Sakarias
------------------------------- */
+/* ----------------
+Tic-Tac-Toe - Kris
+------------------- */
 
 #include <stdio.h>
 #include <ctype.h>
