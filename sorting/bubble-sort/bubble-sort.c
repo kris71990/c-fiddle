@@ -23,7 +23,7 @@ int main() {
 
   int size = sizeof(arr)/sizeof(arr[0]);
 
-  int x, y;
+  int left, right;
   for (x = 0; x < size - 1; x++) {
     for (y = 0; y < size - x - 1; y++) {
       if (arr[y] > arr[y + 1]) {
