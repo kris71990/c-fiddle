@@ -3,5 +3,9 @@
 Implementations of some standard sorting algorithms in C.
 
 `Bubble Sort`
-  - O(n^2) Time
-  - O(1) Space
+  - Time - O(n^2)
+  - Space - O(1)
+
+`Merge Sort`
+  - Time - O(n lg(n))
+  - Space - O(n)
