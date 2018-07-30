@@ -10,6 +10,10 @@ Implementations of some standard sorting algorithms in C.
   - Time - O(n^2)
   - Space - O(1)
 
+`Selection Sort`
+  - Time - O(n^2)
+  - Space - O(1)
+
 `Merge Sort`
   - Time - O(n lg(n))
   - Space - O(n)
