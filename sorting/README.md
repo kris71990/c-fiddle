@@ -17,3 +17,7 @@ Implementations of some standard sorting algorithms in C.
 `Merge Sort`
   - Time - O(n lg(n))
   - Space - O(n)
+
+`Quick Sort`
+  - Time - O(n lg(n))
+  - Space - O(lg(n))
