@@ -1,4 +1,4 @@
-# Experimentation with C
+# Experimentation with C and C++
 
 **Author** Kris Sakarias
 
@@ -6,11 +6,11 @@
 
 ## About 
 
-This repo contains some simple things I have built with C to help me learn and become familiar with the language.
+This repo contains some simple things I have built with C/C++ to help me learn and become familiar with the languages.
 
 ### Getting Started
 
-1. `git clone https://github.com/kris71990/c-games.git`
+1. `git clone https://github.com/kris71990/c-fiddle.git`
 
 2. Choose a compiler 
   - For this project, I am using the open-source Clang compiler from LLVM - http://llvm.org - that is included in Apple's Dev Tools. 
