@@ -5,21 +5,20 @@
 int count;
 
 int print_grid(int grid[][9]) {
-	for (int i = 0; i < 9; i++) {
-		std::cout << "\n";
-		std::cout << "-------------------------------------\n";
-		for (int j = 0; j < 9; j++) {
-			std::cout << " ";
-			if (grid[i][j] == 0) {
-				std::cout << " ";
-			}
-			else {
-				std::cout << grid[i][j];
-			}
-			std::cout << " |";
-		}
-	}
-	std::cout << "\n-------------------------------------\n\n";
+  for (int i = 0; i < 9; i++) {
+    std::cout << "\n";
+    std::cout << "-------------------------------------\n";
+    for (int j = 0; j < 9; j++) {
+      std::cout << " ";
+      if (grid[i][j] == 0) {
+        std::cout << " ";
+      } else {
+        std::cout << grid[i][j];
+      }
+      std::cout << " |";
+    }
+  }
+  std::cout << "\n-------------------------------------\n\n";
   return 0;
 }
 
@@ -65,37 +64,38 @@ bool validate_placement(int grid[][9], const int& row, const int& col, const int
 }
 
 std::pair<int, int> get_unassigned_location(int grid[][9]) {
-	for (int row = 0; row < 9; row++)
-		for (int col = 0; col < 9; col++)
-			if (grid[row][col] == 0) {
-				return std::make_pair(row, col);
-			}
-	return GRID_FULL;
+  for (int row = 0; row < 9; row++) {
+    for (int col = 0; col < 9; col++) {
+      if (grid[row][col] == 0) {
+        return std::make_pair(row, col);
+      }
+    }
+  }
+  return GRID_FULL;
 }
 
 bool solve_soduko(int grid[][9]) {
-	if (GRID_FULL == get_unassigned_location(grid)) {
-		return true; 
-	}
+  if (GRID_FULL == get_unassigned_location(grid)) {
+    return true; 
+  }
 
-	std::pair<int, int> row_and_col = get_unassigned_location(grid);
-	int row = row_and_col.first;
-	int col = row_and_col.second;
-
-	for (int num = 1; num <= 9; num++) {
-		if (validate_placement(grid, row, col, num)) {
-			grid[row][col] = num;
-
+  std::pair<int, int> row_and_col = get_unassigned_location(grid);
+  int row = row_and_col.first;
+  int col = row_and_col.second;
+  
+  for (int num = 1; num <= 9; num++) {
+    if (validate_placement(grid, row, col, num)) {
+      grid[row][col] = num;
       count++;
       std::cout << "Trying again - (" << count << " guesses)\n";
-
-			if (solve_soduko(grid)) {
-				return true;
-			}
-			grid[row][col] = 0;
-		}
-	}
-	return false; 
+      
+      if (solve_soduko(grid)) {
+        return true;
+      }
+      grid[row][col] = 0;
+    }
+  }
+  return false; 
 }
 
 int main() {
