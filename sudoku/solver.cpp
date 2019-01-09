@@ -116,6 +116,7 @@ int main() {
   print_grid(grid);
 
   if (solve_soduko(grid) == true) {
+    std::cout << "\nSolution Found.\n";
     print_grid(grid);
   } else {
     std::cout << "No solution exists.\n\n";
