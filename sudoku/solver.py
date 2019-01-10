@@ -1,85 +1,85 @@
-#define GRID_FULL std::make_pair(9, 9)
+import time
 
+current_milli_time = lambda: int(round(time.time() * 1000))
+
+grid_full = False
 count = 0
 
 def print_grid(grid):
-  for x in range(9):
-    print('\n');
-    print('-------------------------------------\n');
+  for i in range(9):
+    print('\n-------------------------------------')
     for j in range(9):
-      print(' ')
-      if (grid[i][j] == 0):
-        print(' ')
+      print(' ', end='')
+      if grid[i][j] == 0:
+        print(' ', end='')
       else:
-        print(' ') << grid[i][j]
-      print() << " |";
-  print('\n-------------------------------------\n\n')
+        print(grid[i][j], end='')
+      print(' |', end='')
+  print('\n-------------------------------------\n')
 
 # check if valid in row
 def exists_in_row(grid, row, num):
   for col in range(9):
-    if (grid[row][col] == num):
-      return true;
-  return false;
+    if grid[row][col] == num:
+      return True
+  return False
 
 # check if valid in column
 def exists_in_column(grid, col, num):
   for row in range(9):
-    if (grid[row][col] == num):
-      return true;
-  return false;
+    if grid[row][col] == num:
+      return True
+  return False
 
 # check if valid in square
 def exists_in_box(grid, box_start_row, box_start_col, num):
   for row in range(3):
     for col in range(3):
-      if (grid[row + box_start_row][col + box_start_col] == num):
-        return true;
-  return false;
+      if grid[row + box_start_row][col + box_start_col] == num:
+        return True
+  return False
 
 # check if possible placement by validating with above functions
 def validate_placement(grid, row, col, num):
   in_row = exists_in_row(grid, row, num)
   in_col = exists_in_column(grid, col, num)
   in_box = exists_in_box(grid, row - row % 3, col - col % 3, num)
-  # return !in_row and !in_col and !in_box
+  return (not in_row) and (not in_col) and (not in_box)
 
-# std::pair<int, int> get_unassigned_location(int grid[][9]) {
-#   for (int row = 0; row < 9; row++) {
-#     for (int col = 0; col < 9; col++) {
-#       if (grid[row][col] == 0) {
-#         return std::make_pair(row, col);
-#       }
-#     }
-#   }
-#   return GRID_FULL;
-# }
+def get_unassigned_location(grid):
+  for row in range(9):
+    for col in range(9):
+      if grid[row][col] == 0:
+        return [row, col]
+  global grid_full
+  grid_full = True
 
 def solve_soduko(grid):
-  if (GRID_FULL == get_unassigned_location(grid)):
-    return true; 
+  row_and_col = get_unassigned_location(grid)
 
-  # std::pair<int, int> row_and_col = get_unassigned_location(grid);
-  # int row = row_and_col.first;
-  # int col = row_and_col.second;
+  if grid_full:
+    return True
+
+  row = row_and_col[0]
+  col = row_and_col[1]
   
-  for (num = 1; num <= 9; num++):
-    if (validate_placement(grid, row, col, num)) {
-      grid[row][col] = num;
-      count++;
-      std::cout << "Trying again - (" << count << " guesses)\n";
+  for num in range(1, 10):
+    if validate_placement(grid, row, col, num):
+      grid[row][col] = num
+      global count 
+      count += 1
+      print('Trying again - (%d guesses)' % count)
       
-      if (solve_soduko(grid)) {
-        return true;
-      }
-      grid[row][col] = 0;
-    }
-  }
-  return false; 
-}
+      if solve_soduko(grid):
+        return True
+      grid[row][col] = 0
+  return False
 
 def main():
-  print('\n************************************\n----------- Solve Sudoku -----------\n************************************\n')
+  time_start = current_milli_time()
+  print('\n************************************')
+  print('----------- Solve Sudoku -----------')
+  print('************************************')
 
   # w, h = 9
   # grid = [[0 for x in range(w)] for y in range(h)]
@@ -96,12 +96,15 @@ def main():
     [ 6, 8, 2, 0, 0, 0, 0, 9, 0 ],
   ]
 
-  print_grid(grid);
+  print_grid(grid)
 
-  if (solve_soduko(grid) == true):
-    print('\nSolution Found.\n')
-    print_grid(grid);
+  if solve_soduko(grid):
+    time_end = current_milli_time()
+    total_time = (time_end - time_start) / 1000.0
+    print('\nSolution Found in %f seconds.' % total_time)
+    print_grid(grid)
   else:
-    print('No solution exists.\n\n')
+    time_end = current_milli_time()
+    print('No solution exists.\n')
 
 main()

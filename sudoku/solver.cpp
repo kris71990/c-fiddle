@@ -1,6 +1,13 @@
 #include <iostream>
+#include <ctime>
 
 #define GRID_FULL std::make_pair(9, 9)
+
+double time_diff(clock_t start, clock_t end) {
+  double diff = end - start;
+  double diffms = (diff) / (CLOCKS_PER_SEC / 1000);
+  return diffms;
+}
 
 int count;
 
@@ -99,6 +106,7 @@ bool solve_soduko(int grid[][9]) {
 }
 
 int main() {
+  clock_t start = clock();
   std::cout << "\n************************************\n----------- Solve Sudoku -----------\n************************************\n";
 
   int grid[9][9] = { 
@@ -116,9 +124,13 @@ int main() {
   print_grid(grid);
 
   if (solve_soduko(grid) == true) {
-    std::cout << "\nSolution Found.\n";
+    clock_t end = clock();
+    double elapsed_timems = time_diff(start, end);
+    double elapsed_time = elapsed_timems / 1000.0;
+    std::cout << "\nSolution Found in " << elapsed_time << " seconds (" << elapsed_timems << " milliseconds).\n";
     print_grid(grid);
   } else {
+    clock_t end = clock();
     std::cout << "No solution exists.\n\n";
   }
   
