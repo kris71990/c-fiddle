@@ -109,17 +109,19 @@ int main() {
   clock_t start = clock();
   std::cout << "\n************************************\n----------- Solve Sudoku -----------\n************************************\n";
 
-  int grid[9][9] = { 
-    { 4, 3, 0, 7, 0, 0, 0, 0, 0 },
-    { 0, 0, 7, 9, 3, 0, 0, 0, 0 },
-    { 1, 6, 0, 0, 0, 8, 0, 0, 0 },
-    { 7, 0, 0, 0, 0, 0, 4, 0, 0 },
-    { 0, 0, 0, 3, 2, 9, 0, 0, 0 },
-    { 0, 0, 5, 0, 0, 0, 0, 0, 9 },
-    { 0, 0, 0, 2, 0, 0, 0, 6, 8 },
-    { 0, 0, 0, 0, 8, 1, 7, 0, 0 },
-    { 0, 0, 0, 0, 0, 4, 0, 3, 5 },
-  };
+  int grid[9][9];
+  for (int row = 0; row < 9; row++) {
+    std::string nums;
+    std::cout << "Enter numbers in row " << row + 1 << " (enter 0 if empty): ";
+    std::cin >> nums;
+
+    if (nums.length() != 9) throw std::string("Improper input");
+
+    for (int i = 0; i < nums.length(); i++) {
+      int digit = nums[i] - '0';
+      grid[row][i] = digit;
+    }
+  }
 
   print_grid(grid);
 
