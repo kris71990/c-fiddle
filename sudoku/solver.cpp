@@ -10,6 +10,8 @@ double time_diff(clock_t start, clock_t end) {
 }
 
 int count;
+bool solving = false;
+bool editing = false;
 
 int print_grid(int grid[][9]) {
   for (int i = 0; i < 9; i++) {
@@ -105,11 +107,7 @@ bool solve_soduko(int grid[][9]) {
   return false; 
 }
 
-int main() {
-  clock_t start = clock();
-  std::cout << "\n************************************\n----------- Solve Sudoku -----------\n************************************\n";
-
-  int grid[9][9];
+void createGrid(int grid[][9]) {
   for (int row = 0; row < 9; row++) {
     std::string nums;
     std::cout << "Enter numbers in row " << row + 1 << " (enter 0 if empty): ";
@@ -122,19 +120,51 @@ int main() {
       grid[row][i] = digit;
     }
   }
+}
 
+void initiateSolve() {
+  editing = false;
+  solving = true;
+}
+
+int main() {
+  clock_t start = clock();
+  std::cout << "\n************************************\n----------- Solve Sudoku -----------\n************************************\n";
+
+  int grid[9][9];
+  createGrid(grid);
   print_grid(grid);
+  std::string input;
 
-  if (solve_soduko(grid) == true) {
-    clock_t end = clock();
-    double elapsed_timems = time_diff(start, end);
-    double elapsed_time = elapsed_timems / 1000.0;
-    std::cout << "\nSolution Found in " << elapsed_time << " seconds (" << elapsed_timems << " milliseconds).\n";
+  do {
+    std::cout << "Is this grid correct?\n\n-- Actions -- \n\nSolve - 's'/'solve'\nEdit - 'e'/'edit'\n> ";
+    std::cin >> input;
+  } while (input != "solve" && input != "s" && input != "e" && input != "edit");
+
+  if (input == "solve" || input == "s") initiateSolve();
+  if (input == "edit" || input == "e") editing = true;
+
+  while (editing) {
+    createGrid(grid);
     print_grid(grid);
-  } else {
-    clock_t end = clock();
-    std::cout << "No solution exists.\n\n";
+    std::cout << "Is this grid correct?\n\n-- Actions -- \n\nSolve - 's'/'solve'\nEdit - 'e'/'edit'\n> ";
+    std::cin >> input;
+    if (input == "solve" || input == "s") initiateSolve();
   }
-  
+
+  if (solving && !editing) {
+    if (solve_soduko(grid) == true) {
+      clock_t end = clock();
+      double elapsed_timems = time_diff(start, end);
+      double elapsed_time = elapsed_timems / 1000.0;
+      std::cout << "\nSolution Found in " << elapsed_time << " seconds (" << elapsed_timems << " milliseconds).\n";
+      print_grid(grid);
+      solving = false;
+    } else {
+      clock_t end = clock();
+      std::cout << "No solution exists.\n\n";
+      solving = false;
+    }
+  }
   return 0;
 }
