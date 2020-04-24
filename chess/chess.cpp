@@ -14,9 +14,12 @@ int turn = 0;
 
 void drawBoard(char currentPosition[][8]) {
   std::cout << "\n  a  |  b  |  c  |  d  |  e  |  f  |  g  |  h  | \n";
-  for (int x = 0; x < 8; x++) {
+
+  for (int x = 0; x < 8; x++) 
+  {
     std::cout << "\n------------------------------------------------\n";
-    for (int y = 0; y < 8; y++) {
+    for (int y = 0; y < 8; y++) 
+    {
       std::cout << "  " << currentPosition[x][y] << "  |";
     }
     std::cout << "  " << std::abs(x - 8);
@@ -36,24 +39,31 @@ void movePiece(char currentPosition[][8]) {
 
   char letterTo, letterFrom;
   int numberTo, numberFrom;
-  for (int i = 0; i < spaceFrom.length(); i++) {
-    if (i == 0) {
+  for (int i = 0; i < spaceFrom.length(); i++) 
+  {
+    if (i == 0) 
+    {
       letterFrom = spaceFrom[i];
       letterTo = spaceTo[i];
-    } else {
+    } 
+    else 
+    {
       numberFrom = spaceFrom[i] - '0';
       numberTo = spaceTo[i] - '0';
     }
   }
   int xTo, yTo;
   int xFrom, yFrom;
+
   xTo = std::abs(numberTo - 8);
   yTo = int(letterTo) - '0' - 49;
   xFrom = std::abs(numberFrom - 8);
   yFrom = int(letterFrom) - '0' - 49;
 
-  if (currentPosition[xTo][yTo] == ' ') {
-    if (turn % 2 == 0) {
+  if (currentPosition[xTo][yTo] == ' ') 
+  {
+    if (turn % 2 == 0) 
+    {
       currentPosition[xTo][yTo] = 'W';
       currentPosition[xFrom][yFrom] = ' ';
     } else {
@@ -65,7 +75,8 @@ void movePiece(char currentPosition[][8]) {
 }
 
 int main() {
-  char currentPosition[8][8] = {
+  char currentPosition[8][8] = 
+  {
     { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
     { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
     { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
@@ -76,7 +87,8 @@ int main() {
     { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
   };
 
-  while (!game_end) {
+  while (!game_end) 
+  {
     drawBoard(currentPosition);
     movePiece(currentPosition);
   }

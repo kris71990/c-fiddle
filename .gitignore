@@ -161,5 +161,7 @@ DerivedData/
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
 
+### Project build files
+chess-build/
 
 # End of https://www.gitignore.io/api/c,linux,xcode,macos,windows,visualstudiocode
