@@ -1,8 +1,12 @@
 #include <iostream>
 #include <map>
+#include <array>
 
-bool game_end = false;
-int turn = 0;
+struct State
+{
+  bool game_end;
+  int turn;
+};
 
 // void boardLocationMap() {
 //   std::map<char, int> parseBoardLocation;
@@ -12,7 +16,8 @@ int turn = 0;
 //   }
 // }
 
-void drawBoard(char currentPosition[][8]) {
+void drawBoard(std::array<std::array<char, 8>, 8>& board) 
+{
   std::cout << "\n  a  |  b  |  c  |  d  |  e  |  f  |  g  |  h  | \n";
 
   for (int x = 0; x < 8; x++) 
@@ -20,14 +25,15 @@ void drawBoard(char currentPosition[][8]) {
     std::cout << "\n------------------------------------------------\n";
     for (int y = 0; y < 8; y++) 
     {
-      std::cout << "  " << currentPosition[x][y] << "  |";
+      std::cout << "  " << board[x][y] << "  |";
     }
     std::cout << "  " << std::abs(x - 8);
   }
   std::cout << "\n------------------------------------------------\n\n";
 }
 
-void movePiece(char currentPosition[][8]) {
+bool movePiece(std::array<std::array<char, 8>, 8>& board, State& game_state) 
+{
   std::string spaceFrom;
   std::string spaceTo;
   std::cout << "Select space to move from: ";
@@ -35,7 +41,15 @@ void movePiece(char currentPosition[][8]) {
   std::cout << "Select space to move to: ";
   std::cin >> spaceTo;
 
-  if (spaceFrom.length() != 2 || spaceTo.length() != 2) throw std::string("Improper input");
+  if (spaceFrom == "q" || spaceTo == "q") 
+  {
+    game_state.game_end = true;
+    return false;
+  }
+  if (spaceFrom.length() != 2 || spaceTo.length() != 2)
+  {
+    return false;
+  };
 
   char letterTo, letterFrom;
   int numberTo, numberFrom;
@@ -60,37 +74,42 @@ void movePiece(char currentPosition[][8]) {
   xFrom = std::abs(numberFrom - 8);
   yFrom = int(letterFrom) - '0' - 49;
 
-  if (currentPosition[xTo][yTo] == ' ') 
+  if (board[xTo][yTo] == ' ') 
   {
-    if (turn % 2 == 0) 
+    if (game_state.turn % 2 == 0) 
     {
-      currentPosition[xTo][yTo] = 'W';
-      currentPosition[xFrom][yFrom] = ' ';
+      board[xTo][yTo] = 'W';
+      board[xFrom][yFrom] = ' ';
     } else {
-      currentPosition[xTo][yTo] = 'B';
-      currentPosition[xFrom][yFrom] = ' ';
+      board[xTo][yTo] = 'B';
+      board[xFrom][yFrom] = ' ';
     }
   }
-  turn++;
+  game_state.turn++;
+  return true;
 }
 
-int main() {
-  char currentPosition[8][8] = 
-  {
-    { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-    { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-    { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-    { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-    { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-    { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-    { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
-    { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+int main() 
+{
+  State game_state = { 0, 0 };
+
+  std::array<std::array<char, 8>, 8> board = {
+    {
+      { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+      { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+      { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+      { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+      { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+      { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+      { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+      { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+    }
   };
 
-  while (!game_end) 
+  while (game_state.game_end == 0) 
   {
-    drawBoard(currentPosition);
-    movePiece(currentPosition);
+    drawBoard(board);
+    movePiece(board, game_state);
   }
   return 0;
 }
