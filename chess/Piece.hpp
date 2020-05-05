@@ -1,7 +1,6 @@
 #include <string>
 
-class Piece 
-{
+class Piece {
 public:
   char coordinateX;
   int coordinateY;
