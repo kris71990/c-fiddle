@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <map>
 #include <array>
 
@@ -15,7 +16,7 @@ struct State {
 //   }
 // }
 
-void drawBoard(std::array<std::array<char, 8>, 8>& board) 
+void drawBoard(const std::array<std::array<char, 8>, 8>& board) 
 {
   std::cout << "\n  a  |  b  |  c  |  d  |  e  |  f  |  g  |  h  | \n";
 
@@ -29,10 +30,24 @@ void drawBoard(std::array<std::array<char, 8>, 8>& board)
   std::cout << "\n------------------------------------------------\n\n";
 }
 
+auto player_print(const int turn) {
+  std::string color;
+  if (turn % 2 == 0) {
+    color = "White Move";
+  } else {
+    color = "Black Move";
+  }
+  return [&]{ std::cout << color << '\n'; };
+}
+
 bool movePiece(std::array<std::array<char, 8>, 8>& board, State& game_state) 
 {
   std::string spaceFrom;
   std::string spaceTo;
+  
+  auto print = player_print(game_state.turn);
+  print();
+
   std::cout << "Select space to move from: ";
   std::cin >> spaceFrom;
   std::cout << "Select space to move to: ";
@@ -66,17 +81,27 @@ bool movePiece(std::array<std::array<char, 8>, 8>& board, State& game_state)
   xFrom = std::abs(numberFrom - 8);
   yFrom = int(letterFrom) - '0' - 49;
 
-  if (board[xTo][yTo] == ' ') {
-    if (game_state.turn % 2 == 0) {
+  // if (white), else (black)
+  if (game_state.turn % 2 == 0) {
+    if (board[xFrom][yFrom] != 'W') {
+      return false;
+    }
+
+    if (board[xTo][yTo] == ' ') {
       board[xTo][yTo] = 'W';
       board[xFrom][yFrom] = ' ';
-    } else {
+    } // else capture()
+  } else {
+    if (board[xFrom][yFrom] != 'B') {
+      return false;
+    }
+
+    if (board[xTo][yTo] == ' ') {
       board[xTo][yTo] = 'B';
       board[xFrom][yFrom] = ' ';
-    }
-  } else {
-    // capture(){}
+    } // else capture()
   }
+
   ++game_state.turn;
   return true;
 }
