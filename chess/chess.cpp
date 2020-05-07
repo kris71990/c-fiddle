@@ -3,6 +3,8 @@
 #include <map>
 #include <array>
 
+#include "Pawn.hpp"
+
 struct State {
   bool game_end;
   int turn;
@@ -109,6 +111,18 @@ bool movePiece(std::array<std::array<char, 8>, 8>& board, State& game_state)
 int main() 
 {
   State game_state = { false, 0 };
+
+  std::map<int, Pawn> pieces;
+  Pawn b_pawn('B', 'a', 1);
+
+  // for (int i = 0; i < 8; ++i) {
+  //   pieces[i] = Pawn('B', 'a', 1);
+  // }
+
+  // for (std::map<int, Piece>::iterator it = pieces.begin(); it != pieces.end();) {
+  //   std::cout << it -> first << it -> second.get_coordinates();
+  //   ++it;
+  // }
 
   std::array<std::array<char, 8>, 8> board = {
     {

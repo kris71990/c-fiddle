@@ -1,6 +1,7 @@
 #include "Piece.hpp"
 
 class Pawn : public Piece {
-  Pawn Piece(char player, char coordinateX, int coordinateY);
+public:
+  Pawn(char player, char coordinateX, int coordinateY) : Piece(player, coordinateX, coordinateY){}
   bool move(char coordinateX, int coordinateY);
 };
