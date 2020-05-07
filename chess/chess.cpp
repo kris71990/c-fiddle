@@ -112,17 +112,19 @@ int main()
 {
   State game_state = { false, 0 };
 
-  std::map<int, Pawn> pieces;
-  Pawn b_pawn('B', 'a', 1);
+  std::map<int, Pawn> pieces
+    {
+      std::make_pair(0, Pawn('B', 'a', 1)),
+    };
+  // Pawn b_pawn('B', 'a', 1);
 
   // for (int i = 0; i < 8; ++i) {
   //   pieces[i] = Pawn('B', 'a', 1);
   // }
 
-  // for (std::map<int, Piece>::iterator it = pieces.begin(); it != pieces.end();) {
-  //   std::cout << it -> first << it -> second.get_coordinates();
-  //   ++it;
-  // }
+  for (std::map<int, Pawn>::iterator it = pieces.begin(); it != pieces.end(); ++it) {
+    std::cout << it -> first << " : " << it -> second.type << it -> second.get_coordinates() <<"\n";
+  }
 
   std::array<std::array<char, 8>, 8> board = {
     {

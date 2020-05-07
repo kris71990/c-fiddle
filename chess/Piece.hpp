@@ -3,7 +3,7 @@
 
 class Piece {
 public:
-  Piece(char, char, int);
+  Piece(char p, char x, int y) : player(p), coordinateX(x), coordinateY(y){}
 
   std::string get_coordinates();
   void set_coordinates(char coordinateX, int coordinateY);
@@ -12,13 +12,6 @@ public:
   char coordinateX;
   int coordinateY;
 };
-
-Piece::Piece(char player1, char coordinateX1, int coordinateY1) 
-{
-  player = player1;
-  coordinateX = coordinateX1;
-  coordinateY = coordinateY1;
-}
 
 std::string Piece::get_coordinates()
 {
