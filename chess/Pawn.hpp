@@ -2,8 +2,9 @@
 
 class Pawn : public Piece {
 public:
-  Pawn(char player, char coordinateX, int coordinateY) : Piece(player, coordinateX, coordinateY){}
+  Pawn(char player, int coordinateX, int coordinateY) : Piece(player, coordinateX, coordinateY){}
   
   std::string type = "pawn";
-  bool move(char coordinateX, int coordinateY);
+  char board_char = 'P';
+  bool move(int coordinateX, int coordinateY);
 };

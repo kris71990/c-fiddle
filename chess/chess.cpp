@@ -1,53 +1,31 @@
 #include <iostream>
 #include <string>
-#include <map>
 #include <array>
 
-#include "Pawn.hpp"
+#include "Board.hpp"
 
 struct State {
   bool game_end;
   int turn;
 };
 
-// void boardLocationMap() {
-//   std::map<char, int> parseBoardLocation;
-
-//   for (int i = 0; i < 8; i++) {
-
-//   }
-// }
-
-void drawBoard(const std::array<std::array<char, 8>, 8>& board) 
-{
-  std::cout << "\n  a  |  b  |  c  |  d  |  e  |  f  |  g  |  h  | \n";
-
-  for (int x = 0; x < 8; ++x) {
-    std::cout << "\n------------------------------------------------\n";
-    for (int y = 0; y < 8; ++y) {
-      std::cout << "  " << board[x][y] << "  |";
-    }
-    std::cout << "  " << std::abs(x - 8);
-  }
-  std::cout << "\n------------------------------------------------\n\n";
+auto player_print(const std::string color) {
+  return [&]{ std::cout << color << '\n'; };
 }
 
-auto player_print(const int turn) {
+bool movePiece(std::array<std::array<std::string, 8>, 8>& board, State& game_state) 
+{
+  std::string spaceFrom;
+  std::string spaceTo;
+
   std::string color;
-  if (turn % 2 == 0) {
+  if (game_state.turn % 2 == 0) {
     color = "White Move";
   } else {
     color = "Black Move";
   }
-  return [&]{ std::cout << color << '\n'; };
-}
-
-bool movePiece(std::array<std::array<char, 8>, 8>& board, State& game_state) 
-{
-  std::string spaceFrom;
-  std::string spaceTo;
   
-  auto print = player_print(game_state.turn);
+  auto print = player_print(color);
   print();
 
   std::cout << "Select space to move from: ";
@@ -85,22 +63,22 @@ bool movePiece(std::array<std::array<char, 8>, 8>& board, State& game_state)
 
   // if (white), else (black)
   if (game_state.turn % 2 == 0) {
-    if (board[xFrom][yFrom] != 'W') {
+    if (board[xFrom][yFrom] != "W") {
       return false;
     }
 
-    if (board[xTo][yTo] == ' ') {
-      board[xTo][yTo] = 'W';
-      board[xFrom][yFrom] = ' ';
+    if (board[xTo][yTo] == " ") {
+      board[xTo][yTo] = "W";
+      board[xFrom][yFrom] = " ";
     } // else capture()
   } else {
-    if (board[xFrom][yFrom] != 'B') {
+    if (board[xFrom][yFrom] != "B") {
       return false;
     }
 
-    if (board[xTo][yTo] == ' ') {
-      board[xTo][yTo] = 'B';
-      board[xFrom][yFrom] = ' ';
+    if (board[xTo][yTo] == " ") {
+      board[xTo][yTo] = "B";
+      board[xFrom][yFrom] = " ";
     } // else capture()
   }
 
@@ -111,37 +89,25 @@ bool movePiece(std::array<std::array<char, 8>, 8>& board, State& game_state)
 int main() 
 {
   State game_state = { false, 0 };
+  Board board;
+  board.init();
 
-  std::map<int, Pawn> pieces
-    {
-      std::make_pair(0, Pawn('B', 'a', 1)),
-    };
-  // Pawn b_pawn('B', 'a', 1);
-
-  // for (int i = 0; i < 8; ++i) {
-  //   pieces[i] = Pawn('B', 'a', 1);
-  // }
-
-  for (std::map<int, Pawn>::iterator it = pieces.begin(); it != pieces.end(); ++it) {
-    std::cout << it -> first << " : " << it -> second.type << it -> second.get_coordinates() <<"\n";
-  }
-
-  std::array<std::array<char, 8>, 8> board = {
-    {
-      { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-      { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-      { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-      { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-      { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-      { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-      { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
-      { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
-    }
-  };
+  // board = {
+  //   {
+  //     { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+  //     { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+  //     { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+  //     { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+  //     { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+  //     { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+  //     { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+  //     { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+  //   }
+  // };
 
   while (game_state.game_end == false) {
-    drawBoard(board);
-    movePiece(board, game_state);
+    board.draw_board();
+    movePiece(board.board, game_state);
   }
   return 0;
 }
