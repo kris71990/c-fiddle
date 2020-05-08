@@ -23,6 +23,15 @@ public:
   void draw_board();
 };
 
+template <typename T>
+void place_pieces(std::map<int, T> input)
+{
+  for (typename std::map<int, T>::iterator it = input.begin(); it != input.end(); ++it) {
+    // T piece = *it;
+    board[it -> coordinateX][it -> coordinateY] = it -> board_char;
+  }
+}
+
 // void _init_fill()
 // {
 //   for (int i = 0; i < 8; ++i) {
@@ -66,29 +75,36 @@ void Board::init()
     board[i].fill(" ");
   }
 
-  for (std::map<int, Pawn>::iterator it = pawns.begin(); it != pawns.end(); ++it) {
-    board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
-  }
+  place_pieces(pawns);
+  // place_pieces(rooks);
+  // place_pieces(knights);
+  // place_pieces(bishops);
+  // place_pieces(kings);
+  // place_pieces(queens);
 
-  for (std::map<int, Rook>::iterator it = rooks.begin(); it != rooks.end(); ++it) {
-    board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
-  }
+  // for (std::map<int, Pawn>::iterator it = pawns.begin(); it != pawns.end(); ++it) {
+  //   board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
+  // }
 
-  for (std::map<int, Knight>::iterator it = knights.begin(); it != knights.end(); ++it) {
-    board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
-  }
+  // for (std::map<int, Rook>::iterator it = rooks.begin(); it != rooks.end(); ++it) {
+  //   board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
+  // }
 
-  for (std::map<int, Bishop>::iterator it = bishops.begin(); it != bishops.end(); ++it) {
-    board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
-  }
+  // for (std::map<int, Knight>::iterator it = knights.begin(); it != knights.end(); ++it) {
+  //   board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
+  // }
 
-  for (std::map<int, Queen>::iterator it = queens.begin(); it != queens.end(); ++it) {
-    board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
-  }
+  // for (std::map<int, Bishop>::iterator it = bishops.begin(); it != bishops.end(); ++it) {
+  //   board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
+  // }
 
-  for (std::map<int, King>::iterator it = kings.begin(); it != kings.end(); ++it) {
-    board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
-  }
+  // for (std::map<int, Queen>::iterator it = queens.begin(); it != queens.end(); ++it) {
+  //   board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
+  // }
+
+  // for (std::map<int, King>::iterator it = kings.begin(); it != kings.end(); ++it) {
+  //   board[it -> second.coordinateX][it -> second.coordinateY] = it -> second.board_char;
+  // }
     // {
     //   std::make_pair(0, Pawn('B', 1, 0)),
     //   std::make_pair(1, Pawn('B', 1, 1)),
