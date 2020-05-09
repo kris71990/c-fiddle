@@ -7,4 +7,5 @@ public:
   std::string type = "rook";
   char board_char = 'R';
   bool move(int coordinateX, int coordinateY);
+  void get_board_char() { std::cout << board_char; }
 };

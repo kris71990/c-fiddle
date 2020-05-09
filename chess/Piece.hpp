@@ -10,6 +10,7 @@ public:
 
   std::string get_coordinates();
   void set_coordinates(int coordinateX, int coordinateY);
+  virtual void get_board_char() = 0;
 
   char player;
   int coordinateX;

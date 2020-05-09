@@ -9,4 +9,5 @@ public:
   std::string type = "knight";
   std::string board_char = "Kn";
   bool move(int coordinateX, int coordinateY);
+  void get_board_char() { std::cout << board_char; }
 };

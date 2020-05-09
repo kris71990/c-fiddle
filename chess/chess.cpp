@@ -92,19 +92,6 @@ int main()
   Board board;
   board.init();
 
-  // board = {
-  //   {
-  //     { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-  //     { 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-  //     { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-  //     { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-  //     { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-  //     { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
-  //     { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
-  //     { 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
-  //   }
-  // };
-
   while (game_state.game_end == false) {
     board.draw_board();
     movePiece(board.board, game_state);

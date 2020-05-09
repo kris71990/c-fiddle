@@ -7,4 +7,5 @@ public:
   std::string type = "pawn";
   char board_char = 'P';
   bool move(int coordinateX, int coordinateY);
+  void get_board_char() { std::cout << board_char; }
 };
