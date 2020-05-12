@@ -45,11 +45,11 @@ std::vector<std::array<int, 2>> pawn_moves(Board& board, int turn, int x, int y)
 
 std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
 {
-  std::map<Board::Pos, Board::Piece>::iterator it;
+  std::map<Board::Position, Board::Piece>::iterator it;
   std::vector<std::array<int, 2>> possible_moves;
 
   if (turn % 2 == 0) {
-    it = board.white_pieces.find(Board::Pos(xFrom, yFrom));
+    it = board.white_pieces.find(Board::Position(xFrom, yFrom));
 
     if (it != board.white_pieces.end()) {
       std::string piece_type = board.board_chars[it -> second];
@@ -65,7 +65,7 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
       return "";
     }
   } else {
-    it = board.black_pieces.find(Board::Pos(xFrom, yFrom));
+    it = board.black_pieces.find(Board::Position(xFrom, yFrom));
 
     if (it != board.black_pieces.end()) {
       std::string piece_type = board.board_chars[it -> second];
@@ -150,16 +150,6 @@ int main()
   State game_state = { false, 0 };
   Board board;
   board.init();
-
-  // std::map<Board::Pos, Board::Piece>::iterator it;
-  // it = board.white_pieces.find(Board::Pos(6,0));
-  // if (it != board.white_pieces.end()) {
-  //   std::cout << it -> first.x << it -> first.y;
-  // }
-
-  // for (std::pair<Board::Pos, Board::Piece> map : board.white_pieces) {
-  //   std::cout << map.first.x << map.first.y << "\n"; //board.board_chars[map.second] << "\n";
-  // }
 
   while (game_state.game_end == false) {
     board.draw_board();
