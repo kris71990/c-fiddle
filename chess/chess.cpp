@@ -9,42 +9,56 @@ namespace move_functions {
   
 }
 
+// turn % 2 == 0 -> white
+// turn % 2 == 1 -> black
+
 struct State {
   bool game_end;
   int turn;
 };
 
-auto player_print(const std::string color) {
-  return [&]{ std::cout << color << '\n'; };
-}
+auto player_print(const std::string color) { return [&]{ std::cout << color << '\n'; }; }
+bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
 
-std::vector<std::array<int, 2>> pawn_moves(Board& board, int turn, int x, int y) 
+std::vector<std::array<int, 2>> pawn_moves(std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
 {
   std::vector<std::array<int, 2>> moves;
   if (turn % 2 == 0) {
     if (x == 6) {
-      if (board.board[x - 1][y] == " " && board.board[x - 2][y] == " ") {
+      if (board[x - 1][y] == " " && board[x - 2][y] == " ") {
         moves.push_back({ x - 2, y });
         moves.push_back({ x - 1, y });
       }
     } else {
-      moves.push_back({ x + 1, y });
+      if (is_on_board(x - 1, y)) moves.push_back({ x - 1, y });
     }
   } else {
     if (x == 1) {
-      if (board.board[x + 1][y] == " " && board.board[x + 2][y] == " ") {
+      if (board[x + 1][y] == " " && board[x + 2][y] == " ") {
         moves.push_back({ x + 2, y });
         moves.push_back({ x + 1, y });
       }
     } else {
-      moves.push_back({ x + 1, y });
+      if (is_on_board(x + 1, y)) moves.push_back({ x + 1, y });
     }
   }
   return moves;
 }
 
+std::vector<std::array<int, 2>> king_moves(std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
+{
+  std::vector<std::array<int, 2>> moves;
+  if (x + 1 < 8) moves.push_back({ x + 1, y });
+  if (x - 1 > 0) moves.push_back({ x - 1, y });
+  if (y + 1 < 8) moves.push_back({ x, y + 1 });
+  if (y - 1 > 0) moves.push_back({ x, y - 1 });
+  return moves;
+}
+
 std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
 {
+  if (!is_on_board(xTo, yTo)) { return ""; }
+
   std::map<Board::Position, Board::Piece>::iterator it;
   std::vector<std::array<int, 2>> possible_moves;
 
@@ -54,10 +68,17 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
     if (it != board.white_pieces.end()) {
       std::string piece_type = board.board_chars[it -> second];
       if (piece_type == "P") {
-        possible_moves = pawn_moves(board, turn, it -> first.x, it -> first.y);
+        possible_moves = pawn_moves(board.board, turn, it -> first.x, it -> first.y);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            return "\x1b[1;97m" + piece_type;
+          }
+        }
+      } else if (piece_type == "K") {
+        possible_moves = king_moves(board.board, turn, it -> first.x, it -> first.y);
+        for (std::array<int, 2>& move : possible_moves) {
+          if (move[0] == xTo && move[1] == yTo) {
+            return "\x1b[1;97m" + piece_type;
           }
         }
       }
@@ -70,10 +91,17 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
     if (it != board.black_pieces.end()) {
       std::string piece_type = board.board_chars[it -> second];
       if (piece_type == "P") {
-        possible_moves = pawn_moves(board, turn, it -> first.x, it -> first.y);
+        possible_moves = pawn_moves(board.board, turn, it -> first.x, it -> first.y);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            return "\x1b[1;30m" + piece_type;
+          }
+        }
+      } else if (piece_type == "K") {
+        possible_moves = king_moves(board.board, turn, it -> first.x, it -> first.y);
+        for (std::array<int, 2>& move : possible_moves) {
+          if (move[0] == xTo && move[1] == yTo) {
+            return "\x1b[1;30m" + piece_type;
           }
         }
       }
@@ -137,11 +165,12 @@ bool movePiece(Board& board, State& game_state)
   if (!moved_piece.empty()) {
     board.board[xTo][yTo] = moved_piece;
     board.board[xFrom][yFrom] = " ";
+    ++game_state.turn;
     std::cout << "moved";
-  } 
+  } else {
+    std::cout << "invalid move";
+  }
   // else capture()
-
-  ++game_state.turn;
   return true;
 }
 
