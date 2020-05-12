@@ -89,11 +89,11 @@ void Board::draw_board()
   for (int x = 0; x < 8; ++x) {
     std::cout << "\n------------------------------------------------\n";
     for (int y = 0; y < 8; ++y) {
-      if (board[x][y] == " Kn") {
-         if ((x % 2 == 1 && y % 2 == 0) || (x % 2 == 0 && y % 2 == 1)) {
-          std::cout << "\x1b[100m" << board[x][y] << "\x1b[0m\x1b[0m|";
+      if (board[x][y] == "\x1b[1;97mKn" || board[x][y] == "\x1b[1;30mKn") {
+        if ((x % 2 == 1 && y % 2 == 0) || (x % 2 == 0 && y % 2 == 1)) {
+          std::cout << "\x1b[100m  " << board[x][y] << " \x1b[0m\x1b[0m|";
         } else {
-          std::cout << "\x1b[47m" << board[x][y] << "\x1b[0m\x1b[0m|";
+          std::cout << "\x1b[47m  " << board[x][y] << " \x1b[0m\x1b[0m|";
         }
       } else {
         if ((x % 2 == 1 && y % 2 == 0) || (x % 2 == 0 && y % 2 == 1)) {
