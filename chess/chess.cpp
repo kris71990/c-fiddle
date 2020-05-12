@@ -1,8 +1,13 @@
 #include <iostream>
 #include <string>
 #include <array>
+#include <vector>
 
 #include "Board.hpp"
+
+namespace move_functions {
+  
+}
 
 struct State {
   bool game_end;
@@ -13,7 +18,73 @@ auto player_print(const std::string color) {
   return [&]{ std::cout << color << '\n'; };
 }
 
-bool movePiece(std::array<std::array<std::string, 8>, 8>& board, State& game_state) 
+std::vector<std::array<int, 2>> pawn_moves(Board& board, int turn, int x, int y) 
+{
+  std::vector<std::array<int, 2>> moves;
+  if (turn % 2 == 0) {
+    if (x == 6) {
+      if (board.board[x - 1][y] == " " && board.board[x - 2][y] == " ") {
+        moves.push_back({ x - 2, y });
+        moves.push_back({ x - 1, y });
+      }
+    } else {
+      moves.push_back({ x + 1, y });
+    }
+  } else {
+    if (x == 1) {
+      if (board.board[x + 1][y] == " " && board.board[x + 2][y] == " ") {
+        moves.push_back({ x + 2, y });
+        moves.push_back({ x + 1, y });
+      }
+    } else {
+      moves.push_back({ x + 1, y });
+    }
+  }
+  return moves;
+}
+
+std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
+{
+  std::map<Board::Pos, Board::Piece>::iterator it;
+  std::vector<std::array<int, 2>> possible_moves;
+
+  if (turn % 2 == 0) {
+    it = board.white_pieces.find(Board::Pos(xFrom, yFrom));
+
+    if (it != board.white_pieces.end()) {
+      std::string piece_type = board.board_chars[it -> second];
+      if (piece_type == "P") {
+        possible_moves = pawn_moves(board, turn, it -> first.x, it -> first.y);
+        for (std::array<int, 2>& move : possible_moves) {
+          if (move[0] == xTo && move[1] == yTo) {
+            return piece_type;
+          }
+        }
+      }
+    } else {
+      return "";
+    }
+  } else {
+    it = board.black_pieces.find(Board::Pos(xFrom, yFrom));
+
+    if (it != board.black_pieces.end()) {
+      std::string piece_type = board.board_chars[it -> second];
+      if (piece_type == "P") {
+        possible_moves = pawn_moves(board, turn, it -> first.x, it -> first.y);
+        for (std::array<int, 2>& move : possible_moves) {
+          if (move[0] == xTo && move[1] == yTo) {
+            return piece_type;
+          }
+        }
+      }
+    } else {
+      return "";
+    }
+  }
+  return "";
+}
+
+bool movePiece(Board& board, State& game_state) 
 {
   std::string spaceFrom;
   std::string spaceTo;
@@ -61,26 +132,14 @@ bool movePiece(std::array<std::array<std::string, 8>, 8>& board, State& game_sta
   xFrom = std::abs(numberFrom - 8);
   yFrom = int(letterFrom) - '0' - 49;
 
-  // if (white), else (black)
-  if (game_state.turn % 2 == 0) {
-    if (board[xFrom][yFrom] != "W") {
-      return false;
-    }
+  std::string moved_piece = is_valid_move(board, game_state.turn, xFrom, yFrom, xTo, yTo);
 
-    if (board[xTo][yTo] == " ") {
-      board[xTo][yTo] = "W";
-      board[xFrom][yFrom] = " ";
-    } // else capture()
-  } else {
-    if (board[xFrom][yFrom] != "B") {
-      return false;
-    }
-
-    if (board[xTo][yTo] == " ") {
-      board[xTo][yTo] = "B";
-      board[xFrom][yFrom] = " ";
-    } // else capture()
-  }
+  if (!moved_piece.empty()) {
+    board.board[xTo][yTo] = moved_piece;
+    board.board[xFrom][yFrom] = " ";
+    std::cout << "moved";
+  } 
+  // else capture()
 
   ++game_state.turn;
   return true;
@@ -92,9 +151,19 @@ int main()
   Board board;
   board.init();
 
+  // std::map<Board::Pos, Board::Piece>::iterator it;
+  // it = board.white_pieces.find(Board::Pos(6,0));
+  // if (it != board.white_pieces.end()) {
+  //   std::cout << it -> first.x << it -> first.y;
+  // }
+
+  // for (std::pair<Board::Pos, Board::Piece> map : board.white_pieces) {
+  //   std::cout << map.first.x << map.first.y << "\n"; //board.board_chars[map.second] << "\n";
+  // }
+
   while (game_state.game_end == false) {
     board.draw_board();
-    movePiece(board.board, game_state);
+    movePiece(board, game_state);
   }
   return 0;
 }
