@@ -48,10 +48,30 @@ std::vector<std::array<int, 2>> pawn_moves(std::array<std::array<std::string, 8>
 std::vector<std::array<int, 2>> king_moves(std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
 {
   std::vector<std::array<int, 2>> moves;
-  if (x + 1 < 8) moves.push_back({ x + 1, y });
-  if (x - 1 > 0) moves.push_back({ x - 1, y });
-  if (y + 1 < 8) moves.push_back({ x, y + 1 });
-  if (y - 1 > 0) moves.push_back({ x, y - 1 });
+
+  int count = 0; 
+  int count1 = 0;
+  int count2 = -1;
+  for (int i = 0; i < 8; ++i) {
+    switch (i % 3) {
+      case 0: { // 0,1,2,3,4,5,6,7
+        // if (is_on_board(x - 1, y - 1 + count)) break;
+        moves.push_back({ x - 1, y - 1 + count });
+        ++count;
+        break;
+      }
+      case 1: {
+        moves.push_back({ x + 1, y - 1 + count1 });
+        ++count1;
+        break;
+      }
+      default: {
+        moves.push_back({ x, y + count2 });
+        count2 = 1;
+        break;
+      }
+    }
+  }
   return moves;
 }
 
@@ -76,7 +96,9 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         }
       } else if (piece_type == "K") {
         possible_moves = king_moves(board.board, turn, it -> first.x, it -> first.y);
+        std::cout << "0";
         for (std::array<int, 2>& move : possible_moves) {
+          std::cout << move[0] << " " << move[1] << "\n";
           if (move[0] == xTo && move[1] == yTo) {
             return "\x1b[1;97m" + piece_type;
           }
