@@ -15,7 +15,22 @@ namespace move_functions {
 struct State {
   bool game_end;
   int turn;
+  std::vector<std::string> log;
 };
+
+void print_game_log(const std::vector<std::string>& game_log) {
+  std::cout << "\nGame Log:\n";
+  for (std::string move : game_log) {
+    std::cout << move + "\n\n"; 
+  }
+}
+
+void print_help_menu() {
+  std::cout << "\nChess board is a grid.\nColumns are lettered a-h, rows numbered 1-8\n";
+  std::cout << "Enter a square containing a piece (ex. e2)\n";
+  std::cout << "Enter a square you want to move the piece to (ex. e4; all chess rules apply)\n";
+  std::cout << "Board will reprint after each move\n\n";
+}
 
 auto player_print(const std::string color) { return [&]{ std::cout << color; }; }
 
@@ -179,13 +194,21 @@ bool movePiece(Board& board, State& game_state)
   print_color(); std::cout << " to move\n";
   std::cout << "Select space to move from: ";
   std::cin >> spaceFrom;
-  std::cout << "Select space to move to: ";
-  std::cin >> spaceTo;
-
-  if (spaceFrom == "q" || spaceTo == "q") {
+  if (spaceFrom == "q") {
     game_state.game_end = true;
     return false;
   }
+  if (spaceFrom == "h") print_help_menu();
+  if (spaceFrom == "l") print_game_log(game_state.log);
+
+  std::cout << "Select space to move to: ";
+  std::cin >> spaceTo;
+  if (spaceTo == "q") {
+    game_state.game_end = true;
+    return false;
+  }
+  if (spaceFrom == "h") print_help_menu();
+  if (spaceFrom == "l") print_game_log(game_state.log);
 
   if (spaceFrom.length() != 2 || spaceTo.length() != 2) {
     return false;
@@ -234,19 +257,20 @@ bool movePiece(Board& board, State& game_state)
       board.white_pieces.erase(it);
 
       board.white_pieces[Board::Position(xTo, yTo)] = piece;
-      board.board[xTo][yTo] = moved_piece; //"\x1b[1;97m"
+      board.board[xTo][yTo] = "\x1b[1;97m" + moved_piece; //"\x1b[1;97m"
     } else {
       std::map<Board::Position, Board::Piece>::iterator it;
       it = board.black_pieces.find(Board::Position(xFrom, yFrom));
       board.black_pieces.erase(it);
 
       board.black_pieces[Board::Position(xTo, yTo)] = piece;
-      board.board[xTo][yTo] = moved_piece; //"\x1b[1;30m" 
+      board.board[xTo][yTo] = "\x1b[1;30m" + moved_piece; //"\x1b[1;30m" 
     }
     board.board[xFrom][yFrom] = " ";
-    print_color(); 
-    std::cout << ": " << moved_piece << " from " << letterFrom << numberFrom << " to " << letterTo << numberTo << "\n";
+    std::string move_str = color + ": " + moved_piece + " from " + letterFrom + std::to_string(numberFrom) + " to " + letterTo + std::to_string(numberTo);
+    std::cout << move_str;
     ++game_state.turn;
+    game_state.log.push_back(move_str);
   } else {
     std::cout << "\nInvalid Move\n";
   }
@@ -257,6 +281,16 @@ bool movePiece(Board& board, State& game_state)
 int main() 
 {
   State game_state = { false, 0 };
+
+  std::string input;
+  std::cout << "\nShall we play a game?\n";
+  std::cout << "y - yes, n - no, h - help\n";
+  std::cin >> input;
+  
+  if (input == "n") game_state.game_end = true;
+  if (input == "h") print_help_menu();
+
+  std::cout << "\nGlobal Thermonuclear War might be thrilling, but chess seems a bit safer.\n";
   Board board;
   board.init();
 
