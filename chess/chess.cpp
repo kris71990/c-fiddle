@@ -3,34 +3,27 @@
 #include <array>
 #include <vector>
 
+#include "game_info.hpp"
 #include "Board.hpp"
 
-namespace move_functions {
-  
-}
 
-// turn % 2 == 0 -> white
-// turn % 2 == 1 -> black
-
-struct State {
-  bool game_end;
-  int turn;
-  std::vector<std::string> log;
-};
-
-void print_game_log(const std::vector<std::string>& game_log) {
+void Game_Info::print_game_log(const std::vector<std::string>& game_log) {
   std::cout << "\nGame Log:\n";
   for (std::string move : game_log) {
-    std::cout << move + "\n\n"; 
+    std::cout << move + "\n"; 
   }
+  std::cout << "\n";
 }
 
-void print_help_menu() {
+void Game_Info::print_help_menu() {
   std::cout << "\nChess board is a grid.\nColumns are lettered a-h, rows numbered 1-8\n";
   std::cout << "Enter a square containing a piece (ex. e2)\n";
   std::cout << "Enter a square you want to move the piece to (ex. e4; all chess rules apply)\n";
   std::cout << "Board will reprint after each move\n\n";
 }
+
+// turn % 2 == 0 -> white
+// turn % 2 == 1 -> black
 
 auto player_print(const std::string color) { return [&]{ std::cout << color; }; }
 
@@ -177,7 +170,7 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
   return "";
 }
 
-bool movePiece(Board& board, State& game_state) 
+bool movePiece(Board& board, Game_Info::State& game_state) 
 {
   std::string spaceFrom;
   std::string spaceTo;
@@ -198,8 +191,8 @@ bool movePiece(Board& board, State& game_state)
     game_state.game_end = true;
     return false;
   }
-  if (spaceFrom == "h") print_help_menu();
-  if (spaceFrom == "l") print_game_log(game_state.log);
+  if (spaceFrom == "h") Game_Info::print_help_menu();
+  if (spaceFrom == "l") Game_Info::print_game_log(game_state.log);
 
   std::cout << "Select space to move to: ";
   std::cin >> spaceTo;
@@ -207,8 +200,8 @@ bool movePiece(Board& board, State& game_state)
     game_state.game_end = true;
     return false;
   }
-  if (spaceFrom == "h") print_help_menu();
-  if (spaceFrom == "l") print_game_log(game_state.log);
+  if (spaceFrom == "h") Game_Info::print_help_menu();
+  if (spaceFrom == "l") Game_Info::print_game_log(game_state.log);
 
   if (spaceFrom.length() != 2 || spaceTo.length() != 2) {
     return false;
@@ -280,7 +273,7 @@ bool movePiece(Board& board, State& game_state)
 
 int main() 
 {
-  State game_state = { false, 0 };
+  Game_Info::State game_state = { false, 0 };
 
   std::string input;
   std::cout << "\nShall we play a game?\n";
@@ -288,7 +281,7 @@ int main()
   std::cin >> input;
   
   if (input == "n") game_state.game_end = true;
-  if (input == "h") print_help_menu();
+  if (input == "h") Game_Info::print_help_menu();
 
   std::cout << "\nGlobal Thermonuclear War might be thrilling, but chess seems a bit safer.\n";
   Board board;
