@@ -9,5 +9,4 @@ public:
   std::string type = "bishop";
   std::string board_char = "B";
   bool move(int coordinateX, int coordinateY);
-  void get_board_char() { std::cout << board_char; }
 };
