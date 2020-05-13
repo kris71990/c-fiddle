@@ -6,22 +6,6 @@
 #include "game_info.hpp"
 #include "Board.hpp"
 
-
-void Game_Info::print_game_log(const std::vector<std::string>& game_log) {
-  std::cout << "\nGame Log:\n";
-  for (std::string move : game_log) {
-    std::cout << move + "\n"; 
-  }
-  std::cout << "\n";
-}
-
-void Game_Info::print_help_menu() {
-  std::cout << "\nChess board is a grid.\nColumns are lettered a-h, rows numbered 1-8\n";
-  std::cout << "Enter a square containing a piece (ex. e2)\n";
-  std::cout << "Enter a square you want to move the piece to (ex. e4; all chess rules apply)\n";
-  std::cout << "Board will reprint after each move\n\n";
-}
-
 // turn % 2 == 0 -> white
 // turn % 2 == 1 -> black
 
@@ -35,7 +19,7 @@ bool is_unoccupied(const std::array<std::array<std::string, 8>, 8>& board, int x
   return board[x][y] == " " ? true : false;
 }
 
-std::vector<std::array<int, 2>> pawn_moves(std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
+std::vector<std::array<int, 2>> pawn_moves(const std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
 {
   std::vector<std::array<int, 2>> moves;
   if (turn % 2 == 0) {
@@ -60,7 +44,7 @@ std::vector<std::array<int, 2>> pawn_moves(std::array<std::array<std::string, 8>
   return moves;
 }
 
-std::vector<std::array<int, 2>> king_moves(std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
+std::vector<std::array<int, 2>> king_moves(const std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
 {
   std::vector<std::array<int, 2>> moves;
   int count = 0; 
@@ -95,6 +79,12 @@ std::vector<std::array<int, 2>> king_moves(std::array<std::array<std::string, 8>
   return moves;
 }
 
+std::vector<std::array<int, 2>> knight_moves(const std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
+{
+  std::vector<std::array<int, 2>> moves;
+  return moves;
+}
+
 std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
 {
   if (!is_on_board(xTo, yTo)) { return ""; }
@@ -118,6 +108,7 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
       std::string piece_type = board.board_chars[it_from -> second];
       if (piece_type == "P") {
         possible_moves = pawn_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
+        board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
             return piece_type;
@@ -125,6 +116,7 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         }
       } else if (piece_type == "K") {
         possible_moves = king_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
+        board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
             return piece_type;
@@ -150,6 +142,7 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
       std::string piece_type = board.board_chars[it_from -> second];
       if (piece_type == "P") {
         possible_moves = pawn_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
+        board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
             return piece_type;
@@ -157,6 +150,7 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         }
       } else if (piece_type == "K") {
         possible_moves = king_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
+        board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
             return piece_type;
@@ -170,7 +164,7 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
   return "";
 }
 
-bool movePiece(Board& board, Game_Info::State& game_state) 
+bool move_piece(Board& board, Game_Info::State& game_state) 
 {
   std::string spaceFrom;
   std::string spaceTo;
@@ -274,22 +268,13 @@ bool movePiece(Board& board, Game_Info::State& game_state)
 int main() 
 {
   Game_Info::State game_state = { false, 0 };
-
-  std::string input;
-  std::cout << "\nShall we play a game?\n";
-  std::cout << "y - yes, n - no, h - help\n";
-  std::cin >> input;
-  
-  if (input == "n") game_state.game_end = true;
-  if (input == "h") Game_Info::print_help_menu();
-
-  std::cout << "\nGlobal Thermonuclear War might be thrilling, but chess seems a bit safer.\n";
+  Game_Info::print_initial_prompt(game_state);
   Board board;
   board.init();
 
   while (game_state.game_end == false) {
     board.draw_board();
-    movePiece(board, game_state);
+    move_piece(board, game_state);
   }
   return 0;
 }

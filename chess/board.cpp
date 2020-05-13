@@ -71,3 +71,12 @@ void Board::draw_board()
   }
   std::cout << "\n------------------------------------------------\n\n";
 }
+
+void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
+  std::map<int, char>::iterator it;
+  for (const std::array<int, 2>& move : moves) {
+    it = Board::grid_translator.find(move[1]);
+    int invertedY = 8 - move[0];
+    std::cout << it -> second << invertedY << "\n";
+  }
+}

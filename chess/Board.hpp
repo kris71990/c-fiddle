@@ -1,6 +1,7 @@
 #include <array>
 #include <map>
 #include <string>
+#include <vector>
 
 class Board {
 public:
@@ -26,7 +27,19 @@ public:
       { Piece::queen, "Q" },
       { Piece::king, "K" },
     };
+  std::map<int, char> grid_translator = 
+    {
+      { 0, 'a' },
+      { 1, 'b' },
+      { 2, 'c' },
+      { 3, 'd' },
+      { 4, 'e' },
+      { 5, 'f' },
+      { 6, 'g' },
+      { 7, 'h' },
+    };
   
   void init();
   void draw_board();
+  void print_possible_moves(const std::vector<std::array<int, 2>>& moves);
 };
