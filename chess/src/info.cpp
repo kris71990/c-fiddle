@@ -1,7 +1,10 @@
 #include <iostream>
+#include <map>
+#include <string>
 #include "../include/game_info.hpp"
 
-void Game_Info::print_game_log(const std::vector<std::string>& game_log) {
+void Game_Info::print_game_log(const std::vector<std::string>& game_log) 
+{
   std::cout << "\nGame Log:\n";
   for (std::string move : game_log) {
     std::cout << move + "\n"; 
@@ -16,7 +19,8 @@ void Game_Info::print_help_menu() {
   std::cout << "Board will reprint after each move\n\n";
 }
 
-void Game_Info::print_initial_prompt(Game_Info::State game_state) {
+void Game_Info::print_initial_prompt(Game_Info::State game_state) 
+{
   std::string input;
   std::cout << "\nShall we play a game?\n";
   std::cout << "y - yes, n - no, h - help\n";
@@ -24,4 +28,56 @@ void Game_Info::print_initial_prompt(Game_Info::State game_state) {
   if (input == "n") game_state.game_end = true;
   if (input == "h") Game_Info::print_help_menu();
   std::cout << "\nGlobal Thermonuclear War might be thrilling, but chess seems a bit safer.\n";
+}
+
+std::map<std::string, std::string> Game_Info::print_move_prompt(Game_Info::State& game_state) {
+  std::string spaceFrom;
+  std::string spaceTo;
+  std::string color;
+  std::map<std::string, std::string> move;
+
+  if (game_state.turn % 2 == 0) {
+    color = "White";
+  } else {
+    color = "Black";
+  }
+  
+  std::cout << color << " to move\n";
+  std::cout << "Select space to move from: ";
+  std::cin >> spaceFrom;
+
+  if (spaceFrom == "q") {
+    game_state.game_end = true;
+    return move;
+  }
+  if (spaceFrom == "h") {
+    Game_Info::print_help_menu();
+    return move;
+  }
+  if (spaceFrom == "l") {
+    Game_Info::print_game_log(game_state.log);
+    return move;
+  }
+
+  std::cout << "Select space to move to: ";
+  std::cin >> spaceTo;
+
+  if (spaceTo == "q") {
+    game_state.game_end = true;
+    return move;
+  }
+  if (spaceFrom == "h") {
+    Game_Info::print_help_menu();
+    return move;
+  }
+  if (spaceFrom == "l") {
+    Game_Info::print_game_log(game_state.log);
+    return move;
+  }
+  if (spaceFrom.length() != 2 || spaceTo.length() != 2) return move;
+
+  move["color"] = color;
+  move["spaceFrom"] = spaceFrom;
+  move["spaceTo"] = spaceTo;
+  return move;
 }

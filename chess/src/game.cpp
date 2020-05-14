@@ -9,8 +9,6 @@
 // turn % 2 == 0 -> white
 // turn % 2 == 1 -> black
 
-auto player_print(const std::string color) { return [&]{ std::cout << color; }; }
-
 bool is_on_board(int x, int y) { 
   return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; 
 }
@@ -166,50 +164,21 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
 
 bool move_piece(Board& board, Game_Info::State& game_state) 
 {
-  std::string spaceFrom;
-  std::string spaceTo;
-
-  std::string color;
-  if (game_state.turn % 2 == 0) {
-    color = "White";
-  } else {
-    color = "Black";
+  std::map<std::string, std::string> current_move;
+  while (current_move.empty()) {
+    current_move = Game_Info::print_move_prompt(game_state);
+    if (game_state.game_end == true) return false;
   }
-  
-  auto print_color = player_print(color);
-  
-  print_color(); std::cout << " to move\n";
-  std::cout << "Select space to move from: ";
-  std::cin >> spaceFrom;
-  if (spaceFrom == "q") {
-    game_state.game_end = true;
-    return false;
-  }
-  if (spaceFrom == "h") Game_Info::print_help_menu();
-  if (spaceFrom == "l") Game_Info::print_game_log(game_state.log);
-
-  std::cout << "Select space to move to: ";
-  std::cin >> spaceTo;
-  if (spaceTo == "q") {
-    game_state.game_end = true;
-    return false;
-  }
-  if (spaceFrom == "h") Game_Info::print_help_menu();
-  if (spaceFrom == "l") Game_Info::print_game_log(game_state.log);
-
-  if (spaceFrom.length() != 2 || spaceTo.length() != 2) {
-    return false;
-  };
 
   char letterTo, letterFrom;
   int numberTo, numberFrom;
-  for (int i = 0; i < spaceFrom.length(); ++i) {
+  for (int i = 0; i < current_move["spaceFrom"].length(); ++i) {
     if (i == 0) {
-      letterFrom = spaceFrom[i];
-      letterTo = spaceTo[i];
+      letterFrom = current_move["spaceFrom"][i];
+      letterTo = current_move["spaceTo"][i];
     } else {
-      numberFrom = spaceFrom[i] - '0';
-      numberTo = spaceTo[i] - '0';
+      numberFrom = current_move["spaceFrom"][i] - '0';
+      numberTo = current_move["spaceTo"][i] - '0';
     }
   }
   int xTo, yTo;
@@ -254,7 +223,7 @@ bool move_piece(Board& board, Game_Info::State& game_state)
       board.board[xTo][yTo] = "\x1b[1;30m" + moved_piece; //"\x1b[1;30m" 
     }
     board.board[xFrom][yFrom] = " ";
-    std::string move_str = color + ": " + moved_piece + " from " + letterFrom + std::to_string(numberFrom) + " to " + letterTo + std::to_string(numberTo);
+    std::string move_str = current_move["color"] + ": " + moved_piece + " from " + letterFrom + std::to_string(numberFrom) + " to " + letterTo + std::to_string(numberTo);
     std::cout << move_str;
     ++game_state.turn;
     game_state.log.push_back(move_str);
