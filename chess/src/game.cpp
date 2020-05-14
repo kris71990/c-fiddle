@@ -192,9 +192,14 @@ std::vector<std::array<int, 2>> knight_moves(const std::array<std::array<std::st
 {
   std::vector<std::array<int, 2>> moves;
 
-  for (int i = 0; i < 8; ++i) {
-
-  }
+  if (is_on_board(x - 1, y - 2) && is_unoccupied(board, x - 1, y - 2)) moves.push_back({ x - 1, y - 2 });
+  if (is_on_board(x - 2, y - 1) && is_unoccupied(board, x - 2, y - 1)) moves.push_back({ x - 2, y - 1 });
+  if (is_on_board(x - 1, y + 2) && is_unoccupied(board, x - 1, y + 2)) moves.push_back({ x - 1, y + 2 });
+  if (is_on_board(x - 2, y + 1) && is_unoccupied(board, x - 2, y + 1)) moves.push_back({ x - 2, y + 1 });
+  if (is_on_board(x + 1, y - 2) && is_unoccupied(board, x + 1, y - 2)) moves.push_back({ x + 1, y - 2 });
+  if (is_on_board(x + 2, y - 1) && is_unoccupied(board, x + 2, y - 1)) moves.push_back({ x + 2, y - 1 });
+  if (is_on_board(x + 1, y + 2) && is_unoccupied(board, x + 1, y + 2)) moves.push_back({ x + 1, y + 2 });
+  if (is_on_board(x + 2, y + 1) && is_unoccupied(board, x + 2, y + 1)) moves.push_back({ x + 2, y + 1 });
 
   return moves;
 }
@@ -260,6 +265,14 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
             return piece_type;
           }
         } 
+      } else {
+        possible_moves = knight_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
+        board.print_possible_moves(possible_moves);
+        for (std::array<int, 2>& move : possible_moves) {
+          if (move[0] == xTo && move[1] == yTo) {
+            return piece_type;
+          }
+        } 
       }
     } else {
       return "";
@@ -312,6 +325,14 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         } 
       } else if (piece_type == "Q") {
         possible_moves = queen_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
+        board.print_possible_moves(possible_moves);
+        for (std::array<int, 2>& move : possible_moves) {
+          if (move[0] == xTo && move[1] == yTo) {
+            return piece_type;
+          }
+        } 
+      } else {
+        possible_moves = knight_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
