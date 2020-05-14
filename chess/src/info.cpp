@@ -1,5 +1,5 @@
 #include <iostream>
-#include "game_info.hpp"
+#include "../include/game_info.hpp"
 
 void Game_Info::print_game_log(const std::vector<std::string>& game_log) {
   std::cout << "\nGame Log:\n";

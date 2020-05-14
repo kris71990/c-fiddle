@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Board.hpp"
+#include "../include/Board.hpp"
 
 void Board::init()
 {

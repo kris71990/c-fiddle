@@ -3,8 +3,8 @@
 #include <array>
 #include <vector>
 
-#include "game_info.hpp"
-#include "Board.hpp"
+#include "../include/game_info.hpp"
+#include "../include/Board.hpp"
 
 // turn % 2 == 0 -> white
 // turn % 2 == 1 -> black
