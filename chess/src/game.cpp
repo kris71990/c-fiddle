@@ -98,7 +98,7 @@ std::vector<std::array<int, 2>> bishop_moves(const std::array<std::array<std::st
       if (!is_unoccupied(board, x - i, y + i)) piece_disruption3 = true;
       if (!piece_disruption3) moves.push_back({ x - i, y + i });
     }
-    if (is_on_board(x + i, y - i) && is_unoccupied(board, x + i, y - i)) {
+    if (is_on_board(x + i, y - i)) {
       if (!is_unoccupied(board, x + i, y - i)) piece_disruption4 = true;
       if (!piece_disruption4) moves.push_back({ x + i, y - i });
     }
@@ -110,10 +110,28 @@ std::vector<std::array<int, 2>> rook_moves(const std::array<std::array<std::stri
 {
   std::vector<std::array<int, 2>> moves;
 
-  // for (int i = 0; i < 8; ++i) {
-
-  // }
-
+  bool piece_disruption1 = false;
+  bool piece_disruption2 = false;
+  bool piece_disruption3 = false;
+  bool piece_disruption4 = false;
+  for (int i = 1; i < 8; ++i) {
+    if (is_on_board(x + i, y) && !piece_disruption1) {
+      if (!is_unoccupied(board, x + i, y)) piece_disruption1 = true;
+      if (!piece_disruption1) moves.push_back({ x + i, y });
+    }
+    if (is_on_board(x - i, y)) {
+      if (!is_unoccupied(board, x - i, y)) piece_disruption2 = true;
+      if (!piece_disruption2) moves.push_back({ x - i, y });
+    }
+    if (is_on_board(x, y + i)) {
+      if (!is_unoccupied(board, x, y + i)) piece_disruption3 = true;
+      if (!piece_disruption3) moves.push_back({ x, y + i });
+    }
+    if (is_on_board(x, y - i)) {
+      if (!is_unoccupied(board, x, y - i)) piece_disruption4 = true;
+      if (!piece_disruption4) moves.push_back({ x, y - i });
+    }
+  }
   return moves;
 }
 
@@ -173,6 +191,14 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
             return piece_type;
           }
         } 
+      } else if (piece_type == "R") {
+        possible_moves = rook_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
+        board.print_possible_moves(possible_moves);
+        for (std::array<int, 2>& move : possible_moves) {
+          if (move[0] == xTo && move[1] == yTo) {
+            return piece_type;
+          }
+        } 
       }
     } else {
       return "";
@@ -209,6 +235,14 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         }
       } else if (piece_type == "B") {
         possible_moves = bishop_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
+        board.print_possible_moves(possible_moves);
+        for (std::array<int, 2>& move : possible_moves) {
+          if (move[0] == xTo && move[1] == yTo) {
+            return piece_type;
+          }
+        } 
+      } else if (piece_type == "R") {
+        possible_moves = rook_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
