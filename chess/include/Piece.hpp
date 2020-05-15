@@ -6,10 +6,8 @@
 
 class Piece {
 public:
-  Piece(char p, int x, int y) : player(p), coordinateX(x), coordinateY(y){}
-
-  std::string get_coordinates();
-  void set_coordinates(int coordinateX, int coordinateY);
+  Piece(){}
+  virtual ~Piece(){}
   virtual std::string get_board_char() = 0;
 
   char player;

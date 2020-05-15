@@ -4,10 +4,10 @@
 
 class Queen : public Piece {
 public:
-  Queen(char player, int coordinateX, int coordinateY) : Piece(player, coordinateX, coordinateY){}
+  Queen() : Piece(){}
   
   std::string type = "queen";
   std::string board_char = "Q";
   bool move(int coordinateX, int coordinateY);
-  // void get_board_char() { std::cout << board_char; }
+  std::string get_board_char() { return board_char; }
 };

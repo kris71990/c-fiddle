@@ -2,10 +2,10 @@
 
 class Rook : public Piece {
 public:
-  Rook(char player, int coordinateX, int coordinateY) : Piece(player, coordinateX, coordinateY){}
+  Rook() : Piece(){}
   
   std::string type = "rook";
-  char board_char = 'R';
+  std::string board_char = "R";
   bool move(int coordinateX, int coordinateY);
-  void get_board_char() { std::cout << board_char; }
+  std::string get_board_char() { return board_char; }
 };

@@ -3,9 +3,15 @@
 #include <string>
 #include <vector>
 
+#include "King.hpp"
+#include "Pawn.hpp"
+#include "Rook.hpp"
+#include "Bishop.hpp"
+#include "Knight.hpp"
+#include "Queen.hpp"
+
 class Board {
 public:
-  enum class Piece { king, queen, pawn, rook, bishop, knight };
   std::array<std::array<std::string, 8>, 8> board;
 
   struct Position {
@@ -16,17 +22,8 @@ public:
     bool operator==(const Position &p) const { return x == p.x && y == p.y; }
   };
 
-  std::map<Position, Piece> white_pieces;
-  std::map<Position, Piece> black_pieces;
-  std::map<Piece, std::string> board_chars =
-    {
-      { Piece::pawn, "P" },
-      { Piece::rook, "R" },
-      { Piece::knight, "Kn" },
-      { Piece::bishop, "B" },
-      { Piece::queen, "Q" },
-      { Piece::king, "K" },
-    };
+  std::map<Position, Piece*> white_pieces;
+  std::map<Position, Piece*> black_pieces;
   std::map<int, char> grid_translator = 
     {
       { 0, 'a' },

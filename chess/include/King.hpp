@@ -4,10 +4,10 @@
 
 class King : public Piece {
 public:
-  King(char player, int coordinateX, int coordinateY) : Piece(player, coordinateX, coordinateY){}
+  King() : Piece(){}
+  ~King(){}
   
-  std::string type = "king";
   std::string board_char = "K";
+  std::string get_board_char() { return board_char; }
   bool move(int coordinateX, int coordinateY);
-  void get_board_char() { std::cout << board_char; }
 };

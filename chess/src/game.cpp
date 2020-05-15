@@ -5,13 +5,12 @@
 
 #include "../include/game_info.hpp"
 #include "../include/Board.hpp"
+#include "../include/Piece.hpp"
 
 // turn % 2 == 0 -> white
 // turn % 2 == 1 -> black
 
-bool is_on_board(int x, int y) { 
-  return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; 
-}
+bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
 
 bool is_unoccupied(const std::array<std::array<std::string, 8>, 8>& board, int x, int y) {
   return board[x][y] == " " ? true : false;
@@ -188,6 +187,23 @@ std::vector<std::array<int, 2>> queen_moves(const std::array<std::array<std::str
   return moves;
 }
 
+bool validate_knight_move(int xFrom, int yFrom, int xTo, int yTo) {
+  if (is_on_board(xTo, yTo)) {
+    if ((xFrom - 1 == xTo && yFrom - 2 == yTo) || 
+        (xFrom - 2 == xTo && yFrom - 1 == yTo) ||
+        (xFrom - 1 == xTo && yFrom + 2 == yTo) ||
+        (xFrom - 2 == xTo && yFrom + 1 == yTo) ||
+        (xFrom + 1 == xTo && yFrom - 2 == yTo) ||
+        (xFrom + 2 == xTo && yFrom - 1 == yTo) ||
+        (xFrom + 1 == xTo && yFrom + 2 == yTo) ||
+        (xFrom + 2 == xTo && yFrom + 1 == yTo)) {
+          return true;
+    }
+    return false;
+  }
+  return false;
+}
+
 std::vector<std::array<int, 2>> knight_moves(const std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
 {
   std::vector<std::array<int, 2>> moves;
@@ -204,33 +220,34 @@ std::vector<std::array<int, 2>> knight_moves(const std::array<std::array<std::st
   return moves;
 }
 
-std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
+std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
 {
-  if (!is_on_board(xTo, yTo)) { return ""; }
+  std::vector<std::string> validated_move;
+  if (!is_on_board(xTo, yTo)) { return validated_move; }
 
-  std::map<Board::Position, Board::Piece>::iterator it_from;
+  std::map<Board::Position, Piece*>::iterator it_from;
   std::vector<std::array<int, 2>> possible_moves;
 
   if (turn % 2 == 0) {
-    std::map<Board::Position, Board::Piece>::iterator it_to_white;
+    std::map<Board::Position, Piece*>::iterator it_to_white;
     // check if white piece on destination
     it_to_white = board.white_pieces.find(Board::Position(xTo, yTo));
-    if (it_to_white != board.white_pieces.end()) { return ""; }
+    if (it_to_white != board.white_pieces.end()) { return validated_move; }
 
-    // check if black piece on destination - capture
-    // it_to_black = board.black_pieces.find(Board::Position(xTo, yTo));
-    // if (it_to_black != board.black_pieces.end()) capture();
-
+    std::map<Board::Position, Piece*>::iterator it_to_black;
+    it_to_black = board.black_pieces.find(Board::Position(xTo, yTo));
     it_from = board.white_pieces.find(Board::Position(xFrom, yFrom));
 
     if (it_from != board.white_pieces.end()) {
-      std::string piece_type = board.board_chars[it_from -> second];
+      std::string piece_type = it_from -> second -> get_board_char();
+
       if (piece_type == "P") {
         possible_moves = pawn_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         }
       } else if (piece_type == "K") {
@@ -238,7 +255,8 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         } 
       } else if (piece_type == "B") {
@@ -246,7 +264,8 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         } 
       } else if (piece_type == "R") {
@@ -254,7 +273,8 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         } 
       } else if (piece_type == "Q") {
@@ -262,41 +282,45 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         } 
       } else {
-        possible_moves = knight_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-        board.print_possible_moves(possible_moves);
-        for (std::array<int, 2>& move : possible_moves) {
-          if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+        if (validate_knight_move(it_from -> first.x, it_from -> first.y, xTo, yTo)) {
+          validated_move.push_back(piece_type);
+          if (it_to_black != board.black_pieces.end()) {
+            validated_move.push_back(it_to_black -> second -> get_board_char());
+            // piece has been captured, safely destroy pointer
+            delete it_to_black -> second; 
+            board.black_pieces.erase(it_to_black);
           }
-        } 
+          return validated_move;
+        }
       }
     } else {
-      return "";
+      return validated_move;
     }
   } else {
-    std::map<Board::Position, Board::Piece>::iterator it_to_black;
+    std::map<Board::Position, Piece*>::iterator it_to_black;
     // check if black piece on destination
     it_to_black = board.black_pieces.find(Board::Position(xTo, yTo));
-    if (it_to_black != board.black_pieces.end()) { return ""; }
+    if (it_to_black != board.black_pieces.end()) { return validated_move; }
 
     // check if white piece on destination - capture
-    // it_to_white = board.white_pieces.find(Board::Position(xTo, yTo));
-    // if (it_to_white != board.white_pieces.end()) capture();
-
+    std::map<Board::Position, Piece*>::iterator it_to_white;
+    it_to_white = board.white_pieces.find(Board::Position(xTo, yTo));
     it_from = board.black_pieces.find(Board::Position(xFrom, yFrom));
 
     if (it_from != board.black_pieces.end()) {
-      std::string piece_type = board.board_chars[it_from -> second];
+      std::string piece_type = it_from -> second -> get_board_char();
       if (piece_type == "P") {
         possible_moves = pawn_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         }
       } else if (piece_type == "K") {
@@ -304,7 +328,8 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         }
       } else if (piece_type == "B") {
@@ -312,7 +337,8 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         } 
       } else if (piece_type == "R") {
@@ -320,7 +346,8 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         } 
       } else if (piece_type == "Q") {
@@ -328,23 +355,33 @@ std::string is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo,
         board.print_possible_moves(possible_moves);
         for (std::array<int, 2>& move : possible_moves) {
           if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+            validated_move.push_back(piece_type);
+            return validated_move;
           }
         } 
       } else {
-        possible_moves = knight_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-        board.print_possible_moves(possible_moves);
-        for (std::array<int, 2>& move : possible_moves) {
-          if (move[0] == xTo && move[1] == yTo) {
-            return piece_type;
+        if (validate_knight_move(it_from -> first.x, it_from -> first.y, xTo, yTo)) {
+          validated_move.push_back(piece_type);
+          if (it_to_white != board.white_pieces.end()) {
+            validated_move.push_back(it_to_black -> second -> get_board_char());
+            // piece has been captured, safely destroy pointer
+            delete it_to_black -> second; 
+            board.white_pieces.erase(it_to_white);
           }
-        } 
+          return validated_move;
+        }
+        // board.print_possible_moves(possible_moves);
+        // for (std::array<int, 2>& move : possible_moves) {
+        //   if (move[0] == xTo && move[1] == yTo) {
+        //     return piece_type;
+        //   }
+        // } 
       }
     } else {
-      return "";
+      return validated_move;
     }
   }
-  return "";
+  return validated_move;
 }
 
 bool move_piece(Board& board, Game_Info::State& game_state) 
@@ -374,42 +411,36 @@ bool move_piece(Board& board, Game_Info::State& game_state)
   xFrom = std::abs(numberFrom - 8);
   yFrom = int(letterFrom) - '0' - 49;
 
-  std::string moved_piece = is_valid_move(board, game_state.turn, xFrom, yFrom, xTo, yTo);
-  
-  Board::Piece piece;
-  if (moved_piece == "P") {
-    piece = Board::Piece::pawn;
-  } else if (moved_piece == "K") {
-    piece = Board::Piece::king;
-  } else if (moved_piece == "Q") {
-    piece = Board::Piece::queen;
-  } else if (moved_piece == "B") {
-    piece = Board::Piece::bishop;
-  } else if (moved_piece == "Kn") {
-    piece = Board::Piece::knight;
-  } else {
-    piece = Board::Piece::rook;
-  }
+  std::vector<std::string> moved_piece = is_valid_move(board, game_state.turn, xFrom, yFrom, xTo, yTo);
 
   if (!moved_piece.empty()) {
+    std::map<Board::Position, Piece*>::iterator it;
     if (game_state.turn % 2 == 0) {
-      std::map<Board::Position, Board::Piece>::iterator it;
+      /* updating pointer map flow */
+      // 1. find pointer to piece being moved
       it = board.white_pieces.find(Board::Position(xFrom, yFrom));
-      board.white_pieces.erase(it);
+      // 2. assign piece pointer to new position
+      board.white_pieces[Board::Position(xTo, yTo)] = it -> second;
+      // 4. Erase map entry of old position
+      board.white_pieces.erase(Board::Position(xFrom, yFrom));
 
-      board.white_pieces[Board::Position(xTo, yTo)] = piece;
-      board.board[xTo][yTo] = "\x1b[1;97m" + moved_piece; //"\x1b[1;97m"
+      board.board[xTo][yTo] = "\x1b[1;97m" + moved_piece[0];
     } else {
-      std::map<Board::Position, Board::Piece>::iterator it;
+      /* updating pointer map flow */
+      // 1. find pointer to piece being moved
       it = board.black_pieces.find(Board::Position(xFrom, yFrom));
-      board.black_pieces.erase(it);
-
-      board.black_pieces[Board::Position(xTo, yTo)] = piece;
-      board.board[xTo][yTo] = "\x1b[1;30m" + moved_piece; //"\x1b[1;30m" 
+      // 2. assign piece pointer to new position
+      board.black_pieces[Board::Position(xTo, yTo)] = it -> second;
+      // 4. Erase map entry of old position
+      board.black_pieces.erase(Board::Position(xFrom, yFrom));
+      board.board[xTo][yTo] = "\x1b[1;30m" + moved_piece[0];
     }
     board.board[xFrom][yFrom] = " ";
-    std::string move_str = current_move["color"] + ": " + moved_piece + " from " + letterFrom + std::to_string(numberFrom) + " to " + letterTo + std::to_string(numberTo);
-    std::cout << move_str;
+
+    std::string capture_string;
+    moved_piece.size() == 2 ? capture_string = " -- " + moved_piece[1] + " captured." : "";
+    std::string move_str = current_move["color"] + ": " + moved_piece[0] + " from " + letterFrom + std::to_string(numberFrom) + " to " + letterTo + std::to_string(numberTo) + (capture_string == "" ? "" : capture_string);
+    std::cout << move_str + "\n";
     ++game_state.turn;
     game_state.log.push_back(move_str);
   } else {
