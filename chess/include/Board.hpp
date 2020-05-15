@@ -39,4 +39,7 @@ public:
   void init();
   void draw_board();
   void print_possible_moves(const std::vector<std::array<int, 2>>& moves);
+
+  bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
+  bool is_unoccupied(int x, int y) { return board[x][y] == " " ? true : false; }
 };
