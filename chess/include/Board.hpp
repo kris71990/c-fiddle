@@ -3,6 +3,9 @@
 #include <string>
 #include <vector>
 
+#ifndef BOARD_H
+#define BOARD_H
+
 #include "King.hpp"
 #include "Pawn.hpp"
 #include "Rook.hpp"
@@ -43,3 +46,5 @@ public:
   bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
   bool is_unoccupied(int x, int y) { return board[x][y] == " " ? true : false; }
 };
+
+#endif

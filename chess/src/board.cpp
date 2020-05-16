@@ -27,10 +27,10 @@ void Board::init()
     //   white_pieces[Position(7, i)] = new Queen();
     // }
 
-    // if (i == 4) {
-    //   black_pieces[Position(0, i)] = new King();
-    //   white_pieces[Position(7, i)] = new King();
-    // }
+    if (i == 4) { 
+      black_pieces[Position(0, i)] = new King();
+      white_pieces[Position(7, i)] = new King(); 
+    }
   }
 
   for (int i = 0; i < 8; ++i) { board[i].fill(" "); }
@@ -52,7 +52,6 @@ void Board::draw_board()
   for (int x = 0; x < 8; ++x) {
     std::cout << "\n------------------------------------------------\n";
     for (int y = 0; y < 8; ++y) {
-      // std::cout << "  " << board[x][y] << "  |";
       if (board[x][y] == "\x1b[1;97mKn" || board[x][y] == "\x1b[1;30mKn") {
         if ((x % 2 == 1 && y % 2 == 0) || (x % 2 == 0 && y % 2 == 1)) {
           std::cout << "\x1b[100m  " << board[x][y] << " \x1b[0m\x1b[0m|";

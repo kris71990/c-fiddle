@@ -4,106 +4,12 @@
 #include <vector>
 
 #include "../include/game_info.hpp"
+#include "../include/Moves.hpp"
 #include "../include/Board.hpp"
 #include "../include/Piece.hpp"
 
 // turn % 2 == 0 -> white
 // turn % 2 == 1 -> black
-
-// bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
-
-// bool is_unoccupied(const std::array<std::array<std::string, 8>, 8>& board, int x, int y) {
-//   return board[x][y] == " " ? true : false;
-// }
-
-// std::vector<std::array<int, 2>> pawn_moves(const std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
-// {
-//   std::vector<std::array<int, 2>> moves;
-//   if (turn % 2 == 0) {
-//     if (x == 6) {
-//       if (is_unoccupied(board, x - 2, y) && is_unoccupied(board, x - 1, y)) {
-//         moves.push_back({ x - 2, y });
-//         moves.push_back({ x - 1, y });
-//       }
-//     } else {
-//       if (is_on_board(x - 1, y) && is_unoccupied(board, x - 1, y)) moves.push_back({ x - 1, y });
-//     }
-//   } else {
-//     if (x == 1) {
-//       if (is_unoccupied(board, x + 2, y) && is_unoccupied(board, x + 1, y)) {
-//         moves.push_back({ x + 2, y });
-//         moves.push_back({ x + 1, y });
-//       }
-//     } else {
-//       if (is_on_board(x + 1, y) && is_unoccupied(board, x + 1, y)) moves.push_back({ x + 1, y });
-//     }
-//   }
-//   return moves;
-// }
-
-// bool validate_pawn_move(int turn, bool is_occupied, int xFrom, int yFrom, int xTo, int yTo) {
-//   if (is_on_board(xTo, yTo)) {
-//     if (turn % 2 == 0) {
-//       if (is_occupied) {
-//         if ((xFrom - 1 == xTo) && ((yFrom - 1 == yTo) || (yFrom + 1 == yTo))) return true;
-//         return false;
-//       } else {
-//         if (xFrom == 6) {
-//           if (((xFrom - 2 == xTo && yFrom == yTo) || (xFrom - 1 == xTo && yFrom == yTo))) return true;
-//         } else {
-//           if ((xFrom - 1 == xTo) && (yFrom = yTo)) return true;
-//         }
-//       }
-//     } else {
-//       if (is_occupied) {
-//         if ((xFrom + 1 == xTo) && ((yFrom - 1 == yTo) || (yFrom + 1 == yTo))) return true;
-//         return false;
-//       } else {
-//         if (xFrom == 1) {
-//           if (((xFrom + 2 == xTo && yFrom == yTo) || (xFrom + 1 == xTo && yFrom == yTo))) return true;
-//         } else {
-//           if ((xFrom + 1 == xTo) && (yFrom == yTo)) return true;
-//         }
-//       }
-//     }
-//   }
-//   return false;
-// }
-
-// std::vector<std::array<int, 2>> king_moves(const std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
-// {
-//   std::vector<std::array<int, 2>> moves;
-//   int count = 0; 
-//   int count1 = 0;
-//   int count2 = -1;
-
-//   for (int i = 0; i < 8; ++i) {
-//     switch (i % 3) {
-//       case 0: { 
-//         if (is_on_board(x - 1, y - 1 + count) && is_unoccupied(board, x - 1, y - 1 + count)) {
-//           moves.push_back({ x - 1, y - 1 + count });
-//         }
-//         ++count;
-//         break;
-//       }
-//       case 1: {
-//         if (is_on_board(x + 1, y - 1 + count1) && is_unoccupied(board, x + 1, y - 1 + count1)) {
-//           moves.push_back({ x + 1, y - 1 + count1 });
-//         }
-//         ++count1;
-//         break;
-//       }
-//       default: {
-//         if (is_on_board(x, y + count2) && is_unoccupied(board, x, y + count2)) {
-//           moves.push_back({ x, y + count2 });
-//         }
-//         count2 = 1;
-//         break;
-//       }
-//     }
-//   }
-//   return moves;
-// }
 
 // std::vector<std::array<int, 2>> bishop_moves(const std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
 // {
@@ -216,20 +122,6 @@
 //   return moves;
 // }
 
-// bool validate_knight_move(int xFrom, int yFrom, int xTo, int yTo) {
-//   if ((xFrom - 1 == xTo && yFrom - 2 == yTo) || 
-//       (xFrom - 2 == xTo && yFrom - 1 == yTo) ||
-//       (xFrom - 1 == xTo && yFrom + 2 == yTo) ||
-//       (xFrom - 2 == xTo && yFrom + 1 == yTo) ||
-//       (xFrom + 1 == xTo && yFrom - 2 == yTo) ||
-//       (xFrom + 2 == xTo && yFrom - 1 == yTo) ||
-//       (xFrom + 1 == xTo && yFrom + 2 == yTo) ||
-//       (xFrom + 2 == xTo && yFrom + 1 == yTo)) {
-//         return true;
-//   }
-//   return false;
-// }
-
 // std::vector<std::array<int, 2>> knight_moves(const std::array<std::array<std::string, 8>, 8>& board, int turn, int x, int y) 
 // {
 //   std::vector<std::array<int, 2>> moves;
@@ -267,76 +159,19 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
 
     if (it_from != board.white_pieces.end()) {
       std::string piece_type = it_from -> second -> get_board_char();
+      if (it_to_black != board.black_pieces.end()) is_occupied = true;
 
-      if (piece_type == "P") {
-        if (it_to_black != board.black_pieces.end()) is_occupied = true;
-        if (it_from -> second -> validate_move(turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
-          validated_move.push_back(piece_type);
-          if (is_occupied) {
-            validated_move.push_back(it_to_black -> second -> get_board_char());
-            // piece has been captured, safely destroy pointer
-            delete it_to_black -> second; 
-            board.black_pieces.erase(it_to_black);
-          }
-          return validated_move;    
+      if (it_from -> second -> validate_move(turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
+        validated_move.push_back(piece_type);
+        if (is_occupied) {
+          validated_move.push_back(it_to_black -> second -> get_board_char());
+          // piece has been captured, safely destroy pointer
+          delete it_to_black -> second; 
+          board.black_pieces.erase(it_to_black);
         }
-
-        // possible_moves = pawn_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
+        // possible_moves = Possible_Moves::pawn_moves(board, turn, it_from -> first.x, it_from -> first.y);
         // board.print_possible_moves(possible_moves);
-        // for (std::array<int, 2>& move : possible_moves) {
-        //   if (move[0] == xTo && move[1] == yTo) {
-        //     validated_move.push_back(piece_type);
-        //     return validated_move;
-        //   }
-        // }
-      // } else if (piece_type == "K") {
-      //   possible_moves = king_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-      //   board.print_possible_moves(possible_moves);
-      //   for (std::array<int, 2>& move : possible_moves) {
-      //     if (move[0] == xTo && move[1] == yTo) {
-      //       validated_move.push_back(piece_type);
-      //       return validated_move;
-      //     }
-      //   } 
-      // } else if (piece_type == "B") {
-      //   possible_moves = bishop_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-      //   board.print_possible_moves(possible_moves);
-      //   for (std::array<int, 2>& move : possible_moves) {
-      //     if (move[0] == xTo && move[1] == yTo) {
-      //       validated_move.push_back(piece_type);
-      //       return validated_move;
-      //     }
-      //   } 
-      // } else if (piece_type == "R") {
-      //   possible_moves = rook_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-      //   board.print_possible_moves(possible_moves);
-      //   for (std::array<int, 2>& move : possible_moves) {
-      //     if (move[0] == xTo && move[1] == yTo) {
-      //       validated_move.push_back(piece_type);
-      //       return validated_move;
-      //     }
-      //   } 
-      // } else if (piece_type == "Q") {
-      //   possible_moves = queen_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-      //   board.print_possible_moves(possible_moves);
-      //   for (std::array<int, 2>& move : possible_moves) {
-      //     if (move[0] == xTo && move[1] == yTo) {
-      //       validated_move.push_back(piece_type);
-      //       return validated_move;
-      //     }
-      //   } 
-      } else {
-        if (it_to_black != board.black_pieces.end()) is_occupied = true;
-        if (it_from -> second -> validate_move(turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
-          validated_move.push_back(piece_type);
-          if (is_occupied) {
-            validated_move.push_back(it_to_black -> second -> get_board_char());
-            // piece has been captured, safely destroy pointer
-            delete it_to_black -> second; 
-            board.black_pieces.erase(it_to_black);
-          }
-          return validated_move;
-        }
+        return validated_move;    
       }
     } else {
       return validated_move;
@@ -354,72 +189,19 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
 
     if (it_from != board.black_pieces.end()) {
       std::string piece_type = it_from -> second -> get_board_char();
-      if (piece_type == "P") {
-        if (it_to_white != board.white_pieces.end()) is_occupied = true;
-        if (it_from -> second -> validate_move(turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
-          validated_move.push_back(piece_type);
-          if (is_occupied) {
-            validated_move.push_back(it_to_white -> second -> get_board_char());
-            // piece has been captured, safely destroy pointer
-            delete it_to_white -> second; 
-            board.white_pieces.erase(it_to_white);
-          }
-          return validated_move;    
+      if (it_to_white != board.white_pieces.end()) is_occupied = true;
+
+      if (it_from -> second -> validate_move(turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
+        validated_move.push_back(piece_type);
+        if (is_occupied) {
+          validated_move.push_back(it_to_white -> second -> get_board_char());
+          // piece has been captured, safely destroy pointer
+          delete it_to_white -> second; 
+          board.white_pieces.erase(it_to_white);
         }
-      // } else if (piece_type == "K") {
-      //   possible_moves = king_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-      //   board.print_possible_moves(possible_moves);
-      //   for (std::array<int, 2>& move : possible_moves) {
-      //     if (move[0] == xTo && move[1] == yTo) {
-      //       validated_move.push_back(piece_type);
-      //       return validated_move;
-      //     }
-      //   }
-      // } else if (piece_type == "B") {
-      //   possible_moves = bishop_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-      //   board.print_possible_moves(possible_moves);
-      //   for (std::array<int, 2>& move : possible_moves) {
-      //     if (move[0] == xTo && move[1] == yTo) {
-      //       validated_move.push_back(piece_type);
-      //       return validated_move;
-      //     }
-      //   } 
-      // } else if (piece_type == "R") {
-      //   possible_moves = rook_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-      //   board.print_possible_moves(possible_moves);
-      //   for (std::array<int, 2>& move : possible_moves) {
-      //     if (move[0] == xTo && move[1] == yTo) {
-      //       validated_move.push_back(piece_type);
-      //       return validated_move;
-      //     }
-      //   } 
-      // } else if (piece_type == "Q") {
-      //   possible_moves = queen_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-      //   board.print_possible_moves(possible_moves);
-      //   for (std::array<int, 2>& move : possible_moves) {
-      //     if (move[0] == xTo && move[1] == yTo) {
-      //       validated_move.push_back(piece_type);
-      //       return validated_move;
-      //     }
-      //   } 
-      } else {
-        if (it_to_white != board.white_pieces.end()) is_occupied = true;
-        if (it_from -> second -> validate_move(turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
-          validated_move.push_back(piece_type);
-          if (is_occupied) {
-            validated_move.push_back(it_to_black -> second -> get_board_char());
-            // piece has been captured, safely destroy pointer
-            delete it_to_black -> second; 
-            board.white_pieces.erase(it_to_white);
-          }
-          return validated_move;
-        }
+        // possible_moves = king_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
         // board.print_possible_moves(possible_moves);
-        // for (std::array<int, 2>& move : possible_moves) {
-        //   if (move[0] == xTo && move[1] == yTo) {
-        //     return piece_type;
-        //   }
-        // } 
+        return validated_move;    
       }
     } else {
       return validated_move;
