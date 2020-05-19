@@ -1,7 +1,17 @@
 #include <iostream>
 #include <map>
 #include <string>
+
+#include "../include/Board.hpp"
 #include "../include/game_info.hpp"
+#include "../include/Moves.hpp"
+
+bool hasEnding (std::string const &fullString, std::string const &ending) {
+  if (fullString.length() >= ending.length()) {
+    return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+  } 
+  return false;
+}
 
 void Game_Info::print_game_log(const std::vector<std::string>& game_log) 
 {
@@ -17,6 +27,7 @@ void Game_Info::print_help_menu() {
   std::cout << "Enter a square containing a piece (ex. e2)\n";
   std::cout << "Enter a square you want to move the piece to (ex. e4; all chess rules apply)\n";
   std::cout << "Board will reprint after each move\n\n";
+  std::cout << "Enable help mode with '-h' to get help with moves";
 }
 
 void Game_Info::print_initial_prompt(Game_Info::State game_state) 
@@ -30,7 +41,7 @@ void Game_Info::print_initial_prompt(Game_Info::State game_state)
   std::cout << "\nGlobal Thermonuclear War might be thrilling, but chess seems a bit safer.\n";
 }
 
-std::map<std::string, std::string> Game_Info::print_move_prompt(Game_Info::State& game_state) {
+std::map<std::string, std::string> Game_Info::print_move_prompt(const Board& board, Game_Info::State& game_state) {
   std::string spaceFrom;
   std::string spaceTo;
   std::string color;
@@ -58,6 +69,12 @@ std::map<std::string, std::string> Game_Info::print_move_prompt(Game_Info::State
     Game_Info::print_game_log(game_state.log);
     return move;
   }
+  if (hasEnding(spaceFrom, "-h")) game_state.help = true;
+  if (hasEnding(spaceFrom, "-hx")) game_state.help = false;
+
+  // if (game_state.help == true) {
+  //   std::string piece_type = board[]
+  // }
 
   std::cout << "Select space to move to: ";
   std::cin >> spaceTo;
