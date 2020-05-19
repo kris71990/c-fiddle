@@ -88,38 +88,11 @@ bool move_piece(Board& board, Game_Info::State& game_state)
     if (game_state.game_end == true) return false;
   }
 
-  std::cout << current_move["spaceFrom"] << current_move["spaceTo"];
-
-  // char letterTo, letterFrom;
-  // int numberTo, numberFrom;
-  int xTo, yTo;
-  int xFrom, yFrom;
-
-  for (int i = 0; i < current_move["spaceFrom"].length(); ++i) {
-    if (i == 0) {
-      std::map<char, int>::iterator it_from;
-      std::map<char, int>::iterator it_to; 
-      it_from = board.grid_translator_to_array.find(current_move["spaceFrom"][i]);
-      it_to = board.grid_translator_to_array.find(current_move["spaceTo"][i]);
-
-      yFrom = it_from -> second;
-      yTo = it_to -> second;
-
-      // letterFrom = current_move["spaceFrom"][i];
-      // letterTo = current_move["spaceTo"][i];
-    } else {
-      xFrom = 8 - current_move["spaceFrom"][i];
-      xTo = 8 - current_move["spaceTo"][i];
-      // numberFrom = current_move["spaceFrom"][i] - '0';
-      // numberTo = current_move["spaceTo"][i] - '0';
-    }
-  }
-
-  // xTo = std::abs(numberTo - 8);
-  // yTo = int(letterTo) - '0' - 49;
-  // xFrom = std::abs(numberFrom - 8);
-  // yFrom = int(letterFrom) - '0' - 49;
-  std::cout << std::to_string(xFrom) << std::to_string(yFrom) << std::to_string(xTo) << std::to_string(yTo);
+  std::vector<std::vector<int>> move_coordinates = board.parse_move_input(current_move);
+  int xFrom = move_coordinates[0][0];
+  int yFrom = move_coordinates[0][1];
+  int xTo = move_coordinates[1][0];
+  int yTo = move_coordinates[1][1];
 
   std::vector<std::string> moved_piece = is_valid_move(board, game_state.turn, xFrom, yFrom, xTo, yTo);
 
@@ -152,8 +125,8 @@ bool move_piece(Board& board, Game_Info::State& game_state)
     moved_piece.size() == 2 ? capture_string = " -- " + moved_piece[1] + " captured." : "";
     std::string move_str = 
       current_move["color"] + ": " + moved_piece[0] + " from " + 
-      board.grid_translator_to_text[yFrom] + std::to_string(xFrom) + " to " + 
-      board.grid_translator_to_text[yTo] + std::to_string(xTo) + 
+      board.grid_translator[yFrom] + std::to_string(8 - xFrom) + " to " + 
+      board.grid_translator[yTo] + std::to_string(8 - xTo) + 
       (capture_string == "" ? "" : capture_string);
 
     std::cout << move_str + "\n";

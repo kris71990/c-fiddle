@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+
 #include "../include/Board.hpp"
 
 void Board::init()
@@ -74,8 +76,37 @@ void Board::draw_board()
 void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
   std::map<int, char>::iterator it;
   for (const std::array<int, 2>& move : moves) {
-    it = Board::grid_translator_to_text.find(move[1]);
+    it = Board::grid_translator.find(move[1]);
     int invertedY = 8 - move[0];
     std::cout << it -> second << invertedY << "\n";
   }
+}
+
+std::vector<std::vector<int>> Board::parse_move_input(std::map<std::string, std::string>& move) {
+  char letterTo, letterFrom;
+  int numberTo, numberFrom;
+  int xTo, yTo;
+  int xFrom, yFrom;
+
+  for (int i = 0; i < move["spaceFrom"].length(); ++i) {
+    if (i == 0) {
+      letterFrom = move["spaceFrom"][i];
+      letterTo = move["spaceTo"][i];
+    } else {
+      numberFrom = move["spaceFrom"][i] - '0';
+      numberTo = move["spaceTo"][i] - '0';
+    }
+  }
+
+  xTo = std::abs(numberTo - 8);
+  yTo = int(letterTo) - '0' - 49;
+  xFrom = std::abs(numberFrom - 8);
+  yFrom = int(letterFrom) - '0' - 49;
+
+  std::vector<std::vector<int>> parsed_move = 
+    {
+      { xFrom, yFrom },
+      { xTo, yTo },
+    };
+  return parsed_move;
 }
