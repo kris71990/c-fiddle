@@ -128,8 +128,8 @@ bool move_piece(Board& board, Game_Info::State& game_state)
       board.grid_translator[yFrom] + std::to_string(8 - xFrom) + " to " + 
       board.grid_translator[yTo] + std::to_string(8 - xTo) + 
       (capture_string == "" ? "" : capture_string);
-
     std::cout << move_str + "\n";
+    
     ++game_state.turn;
     game_state.log.push_back(move_str);
   } else {

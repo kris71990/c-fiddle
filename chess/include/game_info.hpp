@@ -6,6 +6,7 @@
 namespace Game_Info {
   struct State {
     bool game_end;
+    bool help;
     int turn;
     std::vector<std::string> log;
   };
