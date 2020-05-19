@@ -9,10 +9,12 @@ bool Rook::validate_move(std::array<std::array<std::string, 8>, 8> board, int tu
     if (yFrom == yTo) return false;
     if (yFrom > yTo) {
       for (int i = yFrom - 1; i >= yTo; --i) {
+        if (i == yTo && is_occupied) return true;
         if (board[xTo][i] != " ") return false;
       } 
     } else {
       for (int i = yFrom + 1; i <= yTo; ++i) {
+        if (i == yTo && is_occupied) return true;
         if (board[xTo][i] != " ") return false;
       }
     }
@@ -22,10 +24,12 @@ bool Rook::validate_move(std::array<std::array<std::string, 8>, 8> board, int tu
     if (xFrom == xTo) return false;
     if (xFrom > xTo) {
       for (int i = xFrom - 1; i >= xTo; --i) {
+        if (i == xTo && is_occupied) return true;
         if (board[i][yTo] != " ") return false;
       } 
     } else {
       for (int i = xFrom + 1; i <= xTo; ++i) {
+        if (i == xTo && is_occupied) return true;
         if (board[i][yTo] != " ") return false;
       }
     }

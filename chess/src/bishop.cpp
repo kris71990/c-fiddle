@@ -11,6 +11,7 @@ bool Bishop::validate_move(std::array<std::array<std::string, 8>, 8> board, int 
     int yRunner = yFrom;
     for (int i = xFrom - 1; i >= xTo; --i) {
       --yRunner;
+      if (i == xTo && is_occupied) return true;
       if (board[i][yRunner] != " ") return false;
     } 
   } else if ((xFrom < xTo) && (yFrom < yTo)) { // down, right
@@ -19,6 +20,7 @@ bool Bishop::validate_move(std::array<std::array<std::string, 8>, 8> board, int 
     int yRunner = yFrom;
     for (int i = xFrom + 1; i <= xTo; ++i) {
       ++yRunner;
+      if (i == xTo && is_occupied) return true;
       if (board[i][yRunner] != " ") return false;
     }
   } else if ((xFrom > xTo) && (yFrom < yTo)) { // up, right
@@ -27,6 +29,7 @@ bool Bishop::validate_move(std::array<std::array<std::string, 8>, 8> board, int 
     int yRunner = yFrom;
     for (int i = xFrom - 1; i >= xTo; --i) {
       ++yRunner;
+      if (i == xTo && is_occupied) return true;
       if (board[i][yRunner] != " ") return false;
     }
   } else if ((xFrom < xTo) && (yFrom > yTo)) { // down, left
@@ -35,6 +38,7 @@ bool Bishop::validate_move(std::array<std::array<std::string, 8>, 8> board, int 
     int yRunner = yFrom;
     for (int i = xFrom + 1; i <= xTo; ++i) {
       --yRunner;
+      if (i == xTo && is_occupied) return true;
       if (board[i][yRunner] != " ") return false;
     }
   }
