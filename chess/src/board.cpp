@@ -7,20 +7,20 @@ void Board::init()
     black_pieces[Position(1, i)] = new Pawn();
     white_pieces[Position(6, i)] = new Pawn();
     
-    // if (i == 0 || i == 7) {
-    //   black_pieces[Position(0, i)] = new Rook();
-    //   white_pieces[Position(7, i)] = new Rook();
-    // }
+    if (i == 0 || i == 7) {
+      black_pieces[Position(0, i)] = new Rook();
+      white_pieces[Position(7, i)] = new Rook();
+    }
 
     if (i == 1 || i == 6) {
       black_pieces[Position(0, i)] = new Knight();
       white_pieces[Position(7, i)] = new Knight();
     }
 
-    // if (i == 2 || i == 5) {
-    //   black_pieces[Position(0, i)] = new Bishop();
-    //   white_pieces[Position(7, i)] = new Bishop();
-    // }
+    if (i == 2 || i == 5) {
+      black_pieces[Position(0, i)] = new Bishop();
+      white_pieces[Position(7, i)] = new Bishop();
+    }
 
     // if (i == 3) {
     //   black_pieces[Position(0, i)] = new Queen();

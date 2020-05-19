@@ -1,6 +1,8 @@
+#include <array>
+
 #include "../include/Pawn.hpp"
 
-bool Pawn::validate_move(int turn, bool is_occupied, int xFrom, int yFrom, int xTo, int yTo) 
+bool Pawn::validate_move(std::array<std::array<std::string, 8>, 8> board, int turn, bool is_occupied, int xFrom, int yFrom, int xTo, int yTo) 
 {
   if (turn % 2 == 0) {
     if (is_occupied) {
