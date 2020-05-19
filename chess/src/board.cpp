@@ -4,8 +4,8 @@
 void Board::init()
 {
   for (int i = 0; i < 8; ++i) {
-    black_pieces[Position(1, i)] = new Pawn();
-    white_pieces[Position(6, i)] = new Pawn();
+    // black_pieces[Position(1, i)] = new Pawn();
+    // white_pieces[Position(6, i)] = new Pawn();
     
     if (i == 0 || i == 7) {
       black_pieces[Position(0, i)] = new Rook();
@@ -22,10 +22,10 @@ void Board::init()
       white_pieces[Position(7, i)] = new Bishop();
     }
 
-    // if (i == 3) {
-    //   black_pieces[Position(0, i)] = new Queen();
-    //   white_pieces[Position(7, i)] = new Queen();
-    // }
+    if (i == 3) {
+      black_pieces[Position(0, i)] = new Queen();
+      white_pieces[Position(7, i)] = new Queen();
+    }
 
     if (i == 4) { 
       black_pieces[Position(0, i)] = new King();
@@ -74,7 +74,7 @@ void Board::draw_board()
 void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
   std::map<int, char>::iterator it;
   for (const std::array<int, 2>& move : moves) {
-    it = Board::grid_translator.find(move[1]);
+    it = Board::grid_translator_to_text.find(move[1]);
     int invertedY = 8 - move[0];
     std::cout << it -> second << invertedY << "\n";
   }

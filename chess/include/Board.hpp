@@ -11,7 +11,7 @@
 #include "Rook.hpp"
 #include "Bishop.hpp"
 #include "Knight.hpp"
-// #include "Queen.hpp"
+#include "Queen.hpp"
 
 class Board {
 public:
@@ -27,7 +27,7 @@ public:
 
   std::map<Position, Piece*> white_pieces;
   std::map<Position, Piece*> black_pieces;
-  std::map<int, char> grid_translator = 
+  std::map<int, char> grid_translator_to_text = 
     {
       { 0, 'a' },
       { 1, 'b' },
@@ -37,6 +37,18 @@ public:
       { 5, 'f' },
       { 6, 'g' },
       { 7, 'h' },
+    };
+
+  std::map<char, int> grid_translator_to_array =
+    {
+      { 'a', 0 },
+      { 'b', 1 },
+      { 'c', 2 },
+      { 'd', 3 },
+      { 'e', 4 },
+      { 'f', 5 },
+      { 'g', 6 },
+      { 'h', 7 },
     };
   
   void init();

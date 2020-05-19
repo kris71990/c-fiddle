@@ -4,12 +4,9 @@
 #include <vector>
 
 #include "../include/game_info.hpp"
-#include "../include/Moves.hpp"
+// #include "../include/Moves.hpp"
 #include "../include/Board.hpp"
 #include "../include/Piece.hpp"
-
-// turn % 2 == 0 -> white
-// turn % 2 == 1 -> black
 
 std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
 {
@@ -31,13 +28,13 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
     it_from = board.white_pieces.find(Board::Position(xFrom, yFrom));
 
     if (it_from != board.white_pieces.end()) {
-      std::string piece_type = it_from -> second -> get_board_char();
+      std::string piece_type = it_from -> second -> get_type();
       if (it_to_black != board.black_pieces.end()) is_occupied = true;
 
       if (it_from -> second -> validate_move(board.board, turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
         validated_move.push_back(piece_type);
         if (is_occupied) {
-          validated_move.push_back(it_to_black -> second -> get_board_char());
+          validated_move.push_back(it_to_black -> second -> get_type());
           // piece has been captured, safely destroy pointer
           delete it_to_black -> second; 
           board.black_pieces.erase(it_to_black);
@@ -61,13 +58,13 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
     it_from = board.black_pieces.find(Board::Position(xFrom, yFrom));
 
     if (it_from != board.black_pieces.end()) {
-      std::string piece_type = it_from -> second -> get_board_char();
+      std::string piece_type = it_from -> second -> get_type();
       if (it_to_white != board.white_pieces.end()) is_occupied = true;
 
       if (it_from -> second -> validate_move(board.board, turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
         validated_move.push_back(piece_type);
         if (is_occupied) {
-          validated_move.push_back(it_to_white -> second -> get_board_char());
+          validated_move.push_back(it_to_white -> second -> get_type());
           // piece has been captured, safely destroy pointer
           delete it_to_white -> second; 
           board.white_pieces.erase(it_to_white);
@@ -87,28 +84,42 @@ bool move_piece(Board& board, Game_Info::State& game_state)
 {
   std::map<std::string, std::string> current_move;
   while (current_move.empty()) {
-    current_move = Game_Info::print_move_prompt(game_state);
+    current_move = Game_Info::print_move_prompt(board, game_state);
     if (game_state.game_end == true) return false;
   }
 
-  char letterTo, letterFrom;
-  int numberTo, numberFrom;
-  for (int i = 0; i < current_move["spaceFrom"].length(); ++i) {
-    if (i == 0) {
-      letterFrom = current_move["spaceFrom"][i];
-      letterTo = current_move["spaceTo"][i];
-    } else {
-      numberFrom = current_move["spaceFrom"][i] - '0';
-      numberTo = current_move["spaceTo"][i] - '0';
-    }
-  }
+  std::cout << current_move["spaceFrom"] << current_move["spaceTo"];
+
+  // char letterTo, letterFrom;
+  // int numberTo, numberFrom;
   int xTo, yTo;
   int xFrom, yFrom;
 
-  xTo = std::abs(numberTo - 8);
-  yTo = int(letterTo) - '0' - 49;
-  xFrom = std::abs(numberFrom - 8);
-  yFrom = int(letterFrom) - '0' - 49;
+  for (int i = 0; i < current_move["spaceFrom"].length(); ++i) {
+    if (i == 0) {
+      std::map<char, int>::iterator it_from;
+      std::map<char, int>::iterator it_to; 
+      it_from = board.grid_translator_to_array.find(current_move["spaceFrom"][i]);
+      it_to = board.grid_translator_to_array.find(current_move["spaceTo"][i]);
+
+      yFrom = it_from -> second;
+      yTo = it_to -> second;
+
+      // letterFrom = current_move["spaceFrom"][i];
+      // letterTo = current_move["spaceTo"][i];
+    } else {
+      xFrom = 8 - current_move["spaceFrom"][i];
+      xTo = 8 - current_move["spaceTo"][i];
+      // numberFrom = current_move["spaceFrom"][i] - '0';
+      // numberTo = current_move["spaceTo"][i] - '0';
+    }
+  }
+
+  // xTo = std::abs(numberTo - 8);
+  // yTo = int(letterTo) - '0' - 49;
+  // xFrom = std::abs(numberFrom - 8);
+  // yFrom = int(letterFrom) - '0' - 49;
+  std::cout << std::to_string(xFrom) << std::to_string(yFrom) << std::to_string(xTo) << std::to_string(yTo);
 
   std::vector<std::string> moved_piece = is_valid_move(board, game_state.turn, xFrom, yFrom, xTo, yTo);
 
@@ -116,36 +127,41 @@ bool move_piece(Board& board, Game_Info::State& game_state)
     std::map<Board::Position, Piece*>::iterator it;
     if (game_state.turn % 2 == 0) {
       /* updating pointer map flow */
+
       // 1. find pointer to piece being moved
       it = board.white_pieces.find(Board::Position(xFrom, yFrom));
       // 2. assign piece pointer to new position
       board.white_pieces[Board::Position(xTo, yTo)] = it -> second;
+      board.board[xTo][yTo] = "\x1b[1;97m" + it -> second -> get_board_char();
       // 4. Erase map entry of old position
       board.white_pieces.erase(Board::Position(xFrom, yFrom));
-
-      board.board[xTo][yTo] = "\x1b[1;97m" + moved_piece[0];
     } else {
       /* updating pointer map flow */
+
       // 1. find pointer to piece being moved
       it = board.black_pieces.find(Board::Position(xFrom, yFrom));
       // 2. assign piece pointer to new position
       board.black_pieces[Board::Position(xTo, yTo)] = it -> second;
+      board.board[xTo][yTo] = "\x1b[1;30m" + it -> second -> get_board_char();
       // 4. Erase map entry of old position
       board.black_pieces.erase(Board::Position(xFrom, yFrom));
-      board.board[xTo][yTo] = "\x1b[1;30m" + moved_piece[0];
     }
     board.board[xFrom][yFrom] = " ";
 
     std::string capture_string;
     moved_piece.size() == 2 ? capture_string = " -- " + moved_piece[1] + " captured." : "";
-    std::string move_str = current_move["color"] + ": " + moved_piece[0] + " from " + letterFrom + std::to_string(numberFrom) + " to " + letterTo + std::to_string(numberTo) + (capture_string == "" ? "" : capture_string);
+    std::string move_str = 
+      current_move["color"] + ": " + moved_piece[0] + " from " + 
+      board.grid_translator_to_text[yFrom] + std::to_string(xFrom) + " to " + 
+      board.grid_translator_to_text[yTo] + std::to_string(xTo) + 
+      (capture_string == "" ? "" : capture_string);
+
     std::cout << move_str + "\n";
     ++game_state.turn;
     game_state.log.push_back(move_str);
   } else {
     std::cout << "\nInvalid Move\n";
   }
-  // else capture()
   return true;
 }
 
